@@ -53,9 +53,9 @@ const watch        = require('gulp-watch')
 const builtInJavascript = [
   './node_modules/magnific-popup/dist/jquery.magnific-popup.js',
   './node_modules/slick-carousel/slick/slick.js',
-  'wp-content/themes/makespace-child/src/js/optimized-events.js',
-  'wp-content/themes/makespace-child/src/js/framework.js',
-  'wp-content/themes/makespace-child/src/js/theme.js'
+  'wp-content/themes/omythic-child/src/js/optimized-events.js',
+  'wp-content/themes/omythic-child/src/js/framework.js',
+  'wp-content/themes/omythic-child/src/js/theme.js'
 ]
 
 const logError = ( error ) => {
@@ -64,12 +64,12 @@ const logError = ( error ) => {
 }
 
 gulp.task('font-awesome', () => {
-  return gulp.src( './wp-content/themes/makespace-framework/includes/fontawesome-pro/web-fonts-with-css/webfonts/**.*' )
-    .pipe( gulp.dest( 'wp-content/themes/makespace-child/fonts' ) )
+  return gulp.src( './wp-content/themes/omythic-framework/includes/fontawesome-pro/web-fonts-with-css/webfonts/**.*' )
+    .pipe( gulp.dest( 'wp-content/themes/omythic-child/fonts' ) )
 })
 
 gulp.task('lint', () => {
-  return gulp.src('wp-content/themes/makespace-child/src/js/**')
+  return gulp.src('wp-content/themes/omythic-child/src/js/**')
     .pipe(jshint())
     .pipe(notify((file) => {
     if (file.jshint.success) {
@@ -88,7 +88,7 @@ gulp.task('scripts', gulp.series('lint', () => {
   return gulp.src([...builtInJavascript, ...scripts])
   .pipe(sourcemaps.init())
   .pipe(uglify().on('error', notify.onError('Error: <%= error.message %>')))
-  .pipe(concat('wp-content/themes/makespace-child/scripts.min.js').on('error', notify.onError('Error: <%= error.message %>')))
+  .pipe(concat('wp-content/themes/omythic-child/scripts.min.js').on('error', notify.onError('Error: <%= error.message %>')))
   .pipe(sourcemaps.write('./'))
   .pipe(gulp.dest('./'))
 }))
@@ -99,7 +99,7 @@ gulp.task('scripts-watch',  gulp.series('scripts', (done) => {
 }))
 
 gulp.task('sass', () => {
-  return gulp.src('wp-content/themes/makespace-child/src/scss/style.scss')
+  return gulp.src('wp-content/themes/omythic-child/src/scss/style.scss')
     .pipe(sourcemaps.init())
     .pipe(sass({
       outputStyle: 'compressed'
@@ -111,9 +111,9 @@ gulp.task('sass', () => {
     })]))
     .pipe(sourcemaps.write('./', {
       includeContent: false,
-      sourceRoot: './wp-content/themes/makespace-child/src/scss'
+      sourceRoot: './wp-content/themes/omythic-child/src/scss'
     }))
-    .pipe(gulp.dest('./wp-content/themes/makespace-child/'))
+    .pipe(gulp.dest('./wp-content/themes/omythic-child/'))
     .pipe(browserSync.stream())
 })
 
@@ -124,12 +124,12 @@ gulp.task('serve',  gulp.series('font-awesome', 'sass', 'scripts', (done) => {
       ignorePaths: [localhostURLPathname + '/wp-admin/**']
     },
   })
-  gulp.watch('./wp-content/themes/makespace-child/src/scss/**',  gulp.series('sass'))
-  gulp.watch('./wp-content/themes/makespace-child/src/js/**',  gulp.series('scripts-watch'))
+  gulp.watch('./wp-content/themes/omythic-child/src/scss/**',  gulp.series('sass'))
+  gulp.watch('./wp-content/themes/omythic-child/src/js/**',  gulp.series('scripts-watch'))
   gulp.watch([
-    'wp-content/themes/makespace-child/.gulpwatch',
-    'wp-content/themes/makespace-child/*.php',
-    'wp-content/themes/makespace-child/**/*.php'
+    'wp-content/themes/omythic-child/.gulpwatch',
+    'wp-content/themes/omythic-child/*.php',
+    'wp-content/themes/omythic-child/**/*.php'
   ]).on('change', browserSync.reload)
   done()
 }))
