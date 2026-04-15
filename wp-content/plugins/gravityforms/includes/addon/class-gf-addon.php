@@ -9,6 +9,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 }
 
 use Gravity_Forms\Gravity_Forms\Settings\Settings;
+use Gravity_Forms\Gravity_Forms\Settings\GF_Settings_Encryption;
 use Gravity_Forms\Gravity_Forms\TranslationsPress_Updater;
 use Gravity_Forms\Gravity_Forms\Save_Form\GF_Save_Form_Service_Provider;
 use Gravity_Forms\Gravity_Forms\Save_Form\GF_Save_Form_Helper;
@@ -62,11 +63,11 @@ abstract class GFAddOn {
 	 */
 	protected $_url;
 	/**
-	 * @var string Title of the plugin to be used on the settings page, form settings and plugins page. Example: 'Gravity Forms MailChimp Add-On'
+	 * @var string Title of the plugin to be used on the settings page, form settings and plugins page. Example: 'Gravity Forms Mailchimp Add-On'
 	 */
 	protected $_title;
 	/**
-	 * @var string Short version of the plugin title to be used on menus and other places where a less verbose string is useful. Example: 'MailChimp'
+	 * @var string Short version of the plugin title to be used on menus and other places where a less verbose string is useful. Example: 'Mailchimp'
 	 */
 	protected $_short_title;
 	/**
@@ -77,6 +78,11 @@ abstract class GFAddOn {
 	 * @var string The hook suffix for the app menu
 	 */
 	public $app_hook_suffix;
+
+	/**
+	 * @var string The '.min' suffix to append to asset files in production mode.
+	 */
+	protected $_asset_min;
 
 	private $_saved_settings = array();
 	private $_previous_settings = array();
@@ -92,6 +98,13 @@ abstract class GFAddOn {
 	 * @var array Stores a copy of setting fields that failed validation; only populated after validate_settings() has been called.
 	 */
 	private $_setting_field_errors = array();
+
+	/**
+	 * Stores the current instance of the Settings encryption class.
+	 *
+	 * @var \Gravity_Forms\Gravity_Forms\Settings\GF_Settings_Encryption
+	 */
+	private $_encryptor;
 
 	// ------------ Permissions -----------
 	/**
@@ -170,6 +183,7 @@ abstract class GFAddOn {
 	 * Class constructor which hooks the instance into the WordPress init action
 	 */
 	function __construct() {
+		$this->_asset_min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$this->update_path();
 		$this->bootstrap();
 
@@ -189,25 +203,88 @@ abstract class GFAddOn {
 	 */
 	public function bootstrap() {
 		add_action( 'init', array( $this, 'init' ), 15 );
-		if ( $this->_enable_theme_layer ) {
+
+		$is_admin_ajax = defined('DOING_AJAX') && DOING_AJAX;
+		if ( $this->_enable_theme_layer && ! $is_admin_ajax ) {
 			add_action( 'init', array( $this, 'init_theme_layer' ), 0, 0 );
 		}
 	}
 
+	/**
+	 * Initializes the theme layer process for the add-on.
+	 *
+	 * @since Unknown
+	 *
+	 */
 	public function init_theme_layer() {
 		$layer = new Theme_Layer_Builder();
 		$layer->set_name( $this->theme_layer_slug() )
-		      ->set_short_title( $this->theme_layer_title() )
-		      ->set_priority( $this->theme_layer_priority() )
-		      ->set_icon( $this->theme_layer_icon() )
-		      ->set_settings_fields( $this->theme_layer_settings_fields() )
-		      ->set_overidden_fields( $this->theme_layer_overridden_fields() )
-		      ->set_form_css_properties( array( $this, 'theme_layer_form_css_properties' ) )
-		      ->set_styles( array( $this, 'theme_layer_styles' ) )
-		      ->set_scripts( array( $this, 'theme_layer_scripts' ) )
-		      ->set_capability( $this->get_form_settings_capabilities() )
-		      ->register();
+			  ->set_short_title( $this->theme_layer_title() )
+			  ->set_priority( $this->theme_layer_priority() )
+			  ->set_icon( $this->theme_layer_icon() )
+			  ->set_settings_fields( $this->theme_layer_settings_fields() )
+			  ->set_overidden_fields( $this->theme_layer_overridden_fields() )
+			  ->set_form_css_properties( array( $this, 'theme_layer_form_css_properties' ) )
+			  ->set_styles( array( $this, 'theme_layer_styles' ) )
+			  ->set_scripts( array( $this, 'theme_layer_scripts' ) )
+			  ->set_capability( $this->get_form_settings_capabilities() )
+			  ->register();
 		add_action( 'gform_form_after_open', array( $this, 'output_third_party_styles' ), 998, 2 );
+	}
+
+	/**
+	 * Helper method that returns the theme styles that should be enqueued for the add-on. Returns an array in the format accepted by the Gravity Forms theme layer set_styles() method
+	 *
+	 * @since 2.9.0
+	 *
+	 * @param array  $form               The current form object to enqueue styles for.
+	 * @param string $field_type         The field type associated with the add-on. Styles will only be enqueued on the frontend if the form has a field with the specified field type.
+	 * @param string $gravity_theme_path The path to the gravity theme style. Optional. Only needed for add-ons that implement the gravity theme outside the default /assets/css/dist/theme.css path.
+	 *
+	 * @return array Returns and array of styles to enqueue in the format accepted by the Gravity Forms theme layer set_styles() method.
+	 */
+	public function get_theme_layer_styles( $form, $field_type = '', $gravity_theme_path = '' ) {
+
+		if ( GFCommon::output_default_css() === false ) {
+			return array();
+		}
+
+		$themes = $this->get_themes_to_enqueue( $form, $field_type );
+		$styles = array();
+
+		// Maybe enqueue theme framework.
+		if ( in_array( 'orbital', $themes ) ) {
+			$styles['foundation'] = array(
+				array( "{$this->_slug}_theme_foundation", $this->get_base_url() . "/assets/css/dist/theme-foundation{$this->_asset_min}.css" ),
+			);
+			$styles['framework'] = array(
+				array( "{$this->_slug}_theme_framework", $this->get_base_url() . "/assets/css/dist/theme-framework{$this->_asset_min}.css" ),
+			);
+		}
+
+		// Maybe enqueue gravity theme.
+		if ( in_array( 'gravity-theme', $themes ) ) {
+			$path = $gravity_theme_path ? $gravity_theme_path : $this->get_base_url() . "/assets/css/dist/theme{$this->_asset_min}.css";
+			$styles['theme'] = array(
+				array( "{$this->_slug}_gravity_theme", $path ),
+			);
+		}
+
+		return $styles;
+	}
+
+	/**
+	 * Helper method that returns the themes that should be enqueued for the add-on. Returns an array of theme slugs.
+	 *
+	 * @since 2.9.0
+	 *
+	 * @param array        $form        The current form object to enqueue styles for.
+	 * @param string|array $field_types The field type(s) associated with the add-on. Themes will only be enqueued on the frontend if the form has a field with the specified field type(s). Can be a string with a single field type or an array of strings with multiple field types.
+	 *
+	 * @return array Returns and array of theme slugs to enqueue.
+	 */
+	public function get_themes_to_enqueue ( $form, $field_types = '' ) {
+		return \GFFormDisplay::get_themes_to_enqueue( $form, $field_types );
 	}
 
 	/**
@@ -242,13 +319,15 @@ abstract class GFAddOn {
 	 * Gets all active, registered Add-Ons.
 	 *
 	 * @since Unknown
-	 * @since 2.5.6 Added the $return_instances param.
+	 * @since 2.5.6  Added the $return_instances param.
+	 * @since 2.9.2  Added the $slug_as_key param.
 	 *
 	 * @param bool $return_instances Indicates if the current instances of the add-ons should be returned. Default is false.
+	 * @param bool $slug_as_key      Indicates if the add-on slug should be used as the key to the add-on instance. Default is false.
 	 *
-	 * @return string[]|GFAddOn[] An array of class names or instances.
+	 * @return string[]|(GFAddOn|GFFeedAddOn|GFPaymentAddOn)[] An array of class names or instances.
 	 */
-	public static function get_registered_addons( $return_instances = false ) {
+	public static function get_registered_addons( $return_instances = false, $slug_as_key = false ) {
 		$active_addons = array_unique( self::$_registered_addons['active'] );
 
 		if ( ! $return_instances ) {
@@ -262,10 +341,44 @@ abstract class GFAddOn {
 			if ( ! is_callable( $callback ) ) {
 				continue;
 			}
-			$instances[] = call_user_func( $callback );
+
+			/** @var GFAddOn|GFFeedAddOn|GFPaymentAddOn $instance */
+			$instance = call_user_func( $callback );
+
+			if ( $slug_as_key ) {
+				$instances[ $instance->get_slug() ] = $instance;
+			} else {
+				$instances[] = $instance;
+			}
 		}
 
 		return $instances;
+	}
+
+	/**
+	 * Finds a registered add-on by its slug and return its instance.
+	 *
+	 * @since 2.9.1
+	 *
+	 * @param string $slug The add-on slug.
+	 *
+	 * @return GFAddOn Returns an instance of the add-on with the specified slug.
+	 */
+	public static function get_addon_by_slug( $slug ) {
+
+		static $map = array();
+
+		if ( isset( $map[ $slug ] ) ) {
+			return $map[ $slug ];
+		}
+
+		$addons = GFAddOn::get_registered_addons( true );
+
+		foreach ( $addons as $addon ) {
+			$map[ $addon->get_slug() ] = $addon;
+		}
+
+		return rgar( $map, $slug );
 	}
 
 	/**
@@ -675,18 +788,43 @@ abstract class GFAddOn {
 				case 'plugins':
 
 					// Loop through plugins.
-					foreach ( $requirement as $plugin_path => $plugin_name ) {
+					foreach ( $requirement as $plugin_path => $plugin_config ) {
 
-						// If plugin name is not defined, set plugin path to name.
+						// Handle legacy format where plugin_path is numeric index and plugin_name is the value
 						if ( is_int( $plugin_path ) ) {
-							$plugin_path = $plugin_name;
+							$plugin_path    = $plugin_config;
+							$plugin_name    = $plugin_config;
+							$plugin_version = null;
+						} else {
+							$plugin_name    = is_array( $plugin_config ) ? $plugin_config['name'] : $plugin_config;
+							$plugin_version = is_array( $plugin_config ) ? rgar( $plugin_config, 'version' ) : null;
 						}
 
 						// If plugin is not active, set error.
 						if ( ! is_plugin_active( $plugin_path ) ) {
 							$meets_requirements['meets_requirements'] = false;
-							$meets_requirements['errors'][]           = sprintf( esc_html__( 'Required WordPress plugin is missing: %s.', 'gravityforms' ), $plugin_name );
+							if( ! empty( $plugin_version ) ) {
+								$meets_requirements['errors'][] = sprintf( esc_html__( 'Required WordPress plugin is missing: %1$s %2$s or newer.', 'gravityforms' ), $plugin_name, $plugin_version );
+							} else {
+								$meets_requirements['errors'][] = sprintf( esc_html__( 'Required WordPress plugin is missing: %s.', 'gravityforms' ), $plugin_name );
+							}
 							continue;
+						}
+
+						// If version requirement exists, verify it
+						if ( ! empty( $plugin_version ) ) {
+							if ( ! function_exists( 'get_plugin_data' ) ) {
+								require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+							}
+
+							$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_path );
+							$installed_version = rgar( $plugin_data, 'Version' );
+
+							if ( ! version_compare( $installed_version, $plugin_version, '>=' ) ) {
+								$meets_requirements['meets_requirements'] = false;
+								$meets_requirements['errors'][]           = sprintf( esc_html__( 'Required WordPress plugin "%1$s" is installed but does not meet minimum version requirement: %2$s.', 'gravityforms' ), $plugin_name, $plugin_version );
+								continue;
+							}
 						}
 					}
 
@@ -857,7 +995,7 @@ abstract class GFAddOn {
 	 * See scripts() for an example of the format expected to be returned.
 	 */
 	public function styles() {
-		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		return array(
 			array(
 				'handle'  => 'gaddon_form_settings_css',
@@ -944,7 +1082,7 @@ abstract class GFAddOn {
 	 * </pre>
 	 */
 	public function scripts() {
-		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		return array(
 			array(
 				'handle'  => 'gform_form_admin',
@@ -952,7 +1090,12 @@ abstract class GFAddOn {
 			),
 			array(
 				'handle'  => 'gform_gravityforms',
-				'enqueue' => array( array( 'admin_page' => array( 'form_settings' ) ) )
+				'enqueue' => array(
+					array(
+						'admin_page' => array( 'plugin_settings' ),
+						'tab'        => 'recaptcha',
+					),
+				),
 			),
 			array(
 				'handle'  => 'google_charts',
@@ -1243,32 +1386,39 @@ abstract class GFAddOn {
 	public function output_third_party_styles( $markup, $form ) {
 		$settings           = $this->get_current_settings();
 		$all_block_settings = apply_filters( 'gform_form_block_attribute_values', array() );
-		$page_instance      = isset( $form['page_instance'] ) ? $form['page_instance'] : 0;
-		$block_settings     = isset( $all_block_settings[ $form['id'] ][ $page_instance ] ) ? $all_block_settings[ $form['id'] ][ $page_instance ] : array();
-		$properties         = call_user_func_array( array( $this, 'theme_layer_third_party_styles' ), array( $form['id'], $settings, $block_settings ) );
+		$page_instance      = rgar( $form, 'page_instance', 0 );
+		$form_id            = absint( rgar( $form, 'id' ) );
+		$block_settings     = rgars( $all_block_settings, $form_id . '/' . $page_instance, array() );
+		$properties         = call_user_func_array(
+			array( $this, 'theme_layer_third_party_styles' ),
+			array(
+				$form_id,
+				$settings,
+				$block_settings,
+			)
+		);
 
 		if ( empty( $properties ) ) {
 			return $markup;
 		}
 
 		$base_identifier = sprintf( 'gform.extensions.styles.%s', $this->get_slug() );
-		$form_identifier = sprintf( 'gform.extensions.styles.%s[%s]', $this->get_slug(), $form['id'] );
-		$full_identifier = sprintf( 'gform.extensions.styles.%s[%s][%s]', $this->get_slug(), $form['id'], $page_instance );
+		$form_identifier = sprintf( 'gform.extensions.styles.%s[%s]', $this->get_slug(), $form_id );
+		$full_identifier = sprintf( 'gform.extensions.styles.%s[%s][%s]', $this->get_slug(), $form_id, $page_instance );
 
 		ob_start(); ?>
-
-		<script>
-			gform.extensions = gform.extensions || {};
-			gform.extensions.styles = gform.extensions.styles || {};
-			<?php echo $base_identifier; ?> = <?php echo $base_identifier; ?> || {};
-			<?php echo $form_identifier; ?> = <?php echo $form_identifier; ?> || {};
-			<?php echo $full_identifier; ?> = <?php echo json_encode( $properties ); ?>;
-		</script>
-
+			if ( typeof gform !== 'undefined' ) {
+				gform.extensions = gform.extensions || {};
+				gform.extensions.styles = gform.extensions.styles || {};
+				<?php echo $base_identifier; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> = <?php echo $base_identifier; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> || {};
+				<?php echo $form_identifier; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> = <?php echo $form_identifier; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> || {};
+				<?php echo $full_identifier; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> = <?php echo json_encode( $properties ); ?>;
+			}
 		<?php
 
-		$props = ob_get_clean();
-		return $markup . $props;
+		$script = rtrim( ob_get_clean() );
+
+		return $markup . GFCommon::get_inline_script_tag( $script, false );
 	}
 
 
@@ -1303,8 +1453,8 @@ abstract class GFAddOn {
 					return true;
 				}
 			} else {
-				$query_matches      = isset( $condition['query'] ) ? $this->_request_condition_matches( $_GET, $condition['query'] ) : true;
-				$post_matches       = isset( $condition['post'] ) ? $this->_request_condition_matches( $_POST, $condition['post'] ) : true;
+				$query_matches      = isset( $condition['query'] ) ? $this->_request_condition_matches( $_GET, $condition['query'] ) : true;  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$post_matches       = isset( $condition['post'] ) ? $this->_request_condition_matches( $_POST, $condition['post'] ) : true;  // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				$admin_page_matches = isset( $condition['admin_page'] ) ? $this->_page_condition_matches( $condition['admin_page'], rgar( $condition, 'tab' ) ) : true;
 				$field_type_matches = isset( $condition['field_types'] ) ? $this->_field_condition_matches( $condition['field_types'], $form ) : true;
 
@@ -1528,7 +1678,7 @@ abstract class GFAddOn {
 	 *       );
 	 * }
 	 *
-     * @return array|bool
+	 * @return array|bool
 	 */
 	public function get_results_page_config() {
 		return false;
@@ -1610,8 +1760,8 @@ abstract class GFAddOn {
 	 */
 	public function members_register_caps() {
 
-        // Get capabilities.
-        $caps = $this->get_members_caps();
+		// Get capabilities.
+		$caps = $this->get_members_caps();
 
 		// If no capabilities were found, exit.
 		if ( empty( $caps ) ) {
@@ -1778,27 +1928,25 @@ abstract class GFAddOn {
 	 */
 	public function prepare_settings_sections( $sections = array(), $type = 'plugin_settings' ) {
 
-		// If interface is tabbed, ignore.
-		foreach ( $sections as $section ) {
-			if ( array_key_exists( 'sections', $section ) ) {
-				return $sections;
-			}
-		}
-
 		// Get first section key.
 		$first_section = array_keys( $sections );
 		$first_section = array_shift( $first_section );
 
-		// Loop through sections, add full class.
 		foreach ( $sections as $s => &$section ) {
+			if ( array_key_exists( 'sections', $section ) ) {
+				foreach ( $section['sections'] as &$sub_section ) {
+					if ( isset( $sub_section['fields'] ) ) {
+						$sub_section['fields'] = $this->prepare_settings_fields( $sub_section['fields'] );
+					}
+				}
+			} else {
+				// If this is the first section, set title.
+				if ( $s === $first_section && in_array( $type, array( 'plugin_settings' ) ) && ! rgar( $section, 'title', false ) ) {
+					$section['title'] = sprintf( esc_html__( '%s Settings', 'gravityforms' ), $this->get_short_title() );
+				}
 
-			// If this is the first section, set title.
-			if ( $s === $first_section && in_array( $type, array( 'plugin_settings' ) ) && ! rgar( $section, 'title', false ) ) {
-				$section['title'] = sprintf( esc_html__( '%s Settings', 'gravityforms' ), $this->get_short_title() );
+				$this->prepare_settings_fields( $section['fields'] );
 			}
-
-			$this->prepare_settings_fields( $section['fields'] );
-
 		}
 
 		return $sections;
@@ -1940,14 +2088,14 @@ abstract class GFAddOn {
 		?>
 
 		<div
-			id="<?php echo $id; ?>"
-			class="<?php echo implode( ' ', $classes ); ?>"
-			style="<?php echo $style; ?>"
+			id="<?php echo esc_attr( $id ); ?>"
+			class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"
+			style="<?php echo esc_attr( $style ); ?>"
 			>
 
 			<?php if ( $title ): ?>
 				<h4 class="gaddon-section-title gf_settings_subgroup_title">
-					<?php echo $title; ?>
+					<?php echo $title; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<?php if( $tooltip ): ?>
 						<?php gform_tooltip( $tooltip, $tooltip_class ); ?>
 					<?php endif; ?>
@@ -1955,7 +2103,7 @@ abstract class GFAddOn {
 			<?php endif; ?>
 
 			<?php if ( $description ): ?>
-				<div class="gaddon-section-description"><?php echo $description; ?></div>
+				<div class="gaddon-section-description"><?php echo $description; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?></div>
 			<?php endif; ?>
 
 			<table class="form-table gforms_form_settings">
@@ -2011,14 +2159,14 @@ abstract class GFAddOn {
 
 		?>
 
-		<tr id="gaddon-setting-row-<?php echo $field['name'] ?>" <?php echo $display; ?>>
+		<tr id="gaddon-setting-row-<?php echo esc_attr( $field['name'] ); ?>" <?php echo $display; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 			<th>
 				<?php $this->single_setting_label( $field ); ?>
 			</th>
 			<td>
 				<?php
 					$this->single_setting( $field );
-					echo $description;
+					echo $description; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				?>
 			</td>
 		</tr>
@@ -2031,14 +2179,14 @@ abstract class GFAddOn {
 	 */
 	public function single_setting_label( $field ) {
 
-		echo rgar( $field, 'label' );
+		echo rgar( $field, 'label' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		if ( isset( $field['tooltip'] ) ) {
-			echo $this->maybe_get_tooltip( $field );
+			echo $this->maybe_get_tooltip( $field ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		if ( rgar( $field, 'required' ) ) {
-			echo ' ' . $this->get_required_indicator( $field );
+			echo ' ' . $this->get_required_indicator( $field ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 	}
@@ -2073,7 +2221,7 @@ abstract class GFAddOn {
 			}
 
 			// Render field.
-			echo $field->prepare_markup();
+			echo $field->prepare_markup(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			return;
 
 		}
@@ -2130,8 +2278,8 @@ abstract class GFAddOn {
 		}
 
 		$_gaddon_posted_settings = array();
-		if ( count( $_POST ) > 0 ) {
-			foreach ( $_POST as $key => $value ) {
+		if ( count( $_POST ) > 0 ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			foreach ( $_POST as $key => $value ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				if ( preg_match( '|_gaddon_setting_(.*)|', $key, $matches ) ) {
 					$_gaddon_posted_settings[ $matches[1] ] = self::maybe_decode_json( stripslashes_deep( $value ) );
 				}
@@ -2270,7 +2418,7 @@ abstract class GFAddOn {
 	}
 
 	public function has_setting_field_type( $type, $fields ) {
-        if ( ! empty( $fields ) ) {
+		if ( ! empty( $fields ) ) {
 			foreach ( $fields as &$section ) {
 				foreach ( $section['fields'] as $field ) {
 					if ( rgar( $field, 'type' ) == $type ) {
@@ -2312,7 +2460,34 @@ abstract class GFAddOn {
 		return false;
 	}
 
+	/**
+	 * Sets the current instance of object that handles settings encryption.
+	 *
+	 * @since 2.7.17
+	 *
+	 * @param \Gravity_Forms\Gravity_Forms\Settings\GF_Settings_Encryption $encryptor Settings encryptor.
+	 *
+	 * @return void
+	 */
+	public function set_encryptor( $encryptor ) {
+		$this->_encryptor = $encryptor;
+	}
 
+
+	/**
+	 * Returns the current instance of the settings encryptor.
+	 *
+	 * @since 2.7.17
+	 *
+	 * @return GF_Settings_Encryption Returns the current instance of the settings encryptor.
+	 */
+	public function get_encryptor() {
+		if ( ! $this->_encryptor ) {
+			require_once( GFCommon::get_base_path() . '/includes/settings/class-gf-settings-encryption.php' );
+			$this->_encryptor = new GF_Settings_Encryption();
+		}
+		return $this->_encryptor;
+	}
 
 	//------------- Field Types ------------------------------------------------------
 
@@ -2344,7 +2519,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -2379,7 +2554,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -2415,7 +2590,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -2450,7 +2625,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -2532,7 +2707,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -2580,7 +2755,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -2615,7 +2790,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -2697,7 +2872,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -2734,7 +2909,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -2771,7 +2946,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -3128,7 +3303,7 @@ abstract class GFAddOn {
 			}
 		}
 
- 		return $fields;
+		return $fields;
 	}
 
 	/**
@@ -3314,7 +3489,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -3396,7 +3571,7 @@ abstract class GFAddOn {
 		$html = $field->prepare_markup();
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -3437,7 +3612,7 @@ abstract class GFAddOn {
 			value="' . esc_attr( $field['value'] ) . '" ' . implode( ' ', $attributes ) . ' />';
 
 		if ( $echo ) {
-			echo $html;
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $html;
@@ -3806,11 +3981,11 @@ abstract class GFAddOn {
 		$error = $this->get_field_errors( $field );
 
 		return '<span
-            class="gf_tooltip tooltip"
-            title="<h6>' . esc_html__( 'Validation Error', 'gravityforms' ) . '</h6>' . $error . '"
-            style="display:inline-block;position:relative;right:-3px;top:1px;font-size:14px;">
-                <i class="fa fa-exclamation-circle icon-exclamation-sign gf_invalid"></i>
-            </span>';
+			class="gf_tooltip tooltip"
+			title="<h6>' . esc_html__( 'Validation Error', 'gravityforms' ) . '</h6>' . $error . '"
+			style="display:inline-block;position:relative;right:-3px;top:1px;font-size:14px;">
+				<i class="fa fa-exclamation-circle icon-exclamation-sign gf_invalid"></i>
+			</span>';
 	}
 
 	/**
@@ -4193,7 +4368,7 @@ abstract class GFAddOn {
 		$subview = rgget( 'subview' );
 		add_filter( 'gform_form_settings_menu', array( $this, 'add_form_settings_menu' ), 10, 2 );
 
-		if ( rgget( 'page' ) == 'gf_edit_forms' && $view == 'settings' && $subview == $this->get_slug() && $this->current_user_can_any( $this->get_form_settings_capabilities() ) ) {
+		if ( GFForms::get_page_query_arg() == 'gf_edit_forms' && $view == 'settings' && $subview == $this->get_slug() && $this->current_user_can_any( $this->get_form_settings_capabilities() ) ) {
 			require_once( GFCommon::get_base_path() . '/tooltips.php' );
 			add_action( 'gform_form_settings_page_' . $this->get_slug(), array( $this, 'form_settings_page' ) );
 
@@ -4201,7 +4376,7 @@ abstract class GFAddOn {
 			if ( $this->method_is_overridden( 'form_settings_fields' ) ) {
 
 				// Get current form.
-				$form = $this->get_current_form();
+				$form = GFCommon::gform_admin_pre_render( $this->get_current_form() );
 
 				// Get fields.
 				$sections = array_values( $this->form_settings_fields( $form ) );
@@ -4285,11 +4460,10 @@ abstract class GFAddOn {
 		// Display page header.
 		GFFormSettings::page_header( $this->_title );
 
-		// Get current form.
-		$form = $this->get_current_form();
-		$form = gf_apply_filters( array( 'gform_admin_pre_render', $form['id'] ), $form );
-
 		if ( $this->method_is_overridden( 'form_settings' ) ) {
+
+			$form = $this->get_current_form();
+			$form = GFCommon::gform_admin_pre_render( $form );
 
 			// Enables plugins to override settings page by implementing a form_settings() function.
 			$this->form_settings( $form );
@@ -4429,12 +4603,12 @@ abstract class GFAddOn {
 			$icon = $this->plugin_page_icon();
 			if ( ! empty( $icon ) ) {
 				?>
-				<img alt="<?php echo $this->get_short_title() ?>" style="margin: 15px 7px 0pt 0pt; float: left;" src="<?php echo $icon ?>" />
+				<img alt="<?php echo esc_attr( $this->get_short_title() ); ?>" style="margin: 15px 7px 0pt 0pt; float: left;" src="<?php echo $icon; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" />
 			<?php
 			}
 			?>
 
-			<h2 class="gf_admin_page_title"><?php echo $this->plugin_page_title() ?></h2>
+			<h2 class="gf_admin_page_title"><?php echo $this->plugin_page_title(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h2>
 			<?php
 
 			$this->plugin_page();
@@ -4604,8 +4778,8 @@ abstract class GFAddOn {
 	 * Not intended to be overridden or called directly by add-ons.
 	 */
 	public function app_tab_page() {
-		$page        = sanitize_text_field( rgget( 'page' ) );
-		$current_tab = sanitize_text_field( rgget( 'view' ) );
+		$page        = sanitize_text_field( GFForms::get_page_query_arg() );
+		$current_tab = sanitize_text_field( (string) rgget( 'view' ) );
 
 		if ( $page == $this->get_slug() . '_settings' ) {
 
@@ -4751,7 +4925,7 @@ abstract class GFAddOn {
 		);
 
 		// Load Tooltips functions.
-		if ( rgget( 'page' ) == 'gf_settings' && $subview == $this->get_slug() && $this->current_user_can_any( $this->_capabilities_settings_page ) ) {
+		if ( GFForms::get_page_query_arg() == 'gf_settings' && $subview == $this->get_slug() && $this->current_user_can_any( $this->_capabilities_settings_page ) ) {
 			require_once( GFCommon::get_base_path() . '/tooltips.php' );
 		}
 
@@ -4771,6 +4945,7 @@ abstract class GFAddOn {
 					'fields'         => $sections,
 					'initial_values' => $this->get_plugin_settings(),
 					'save_callback'  => array( $this, 'update_plugin_settings' ),
+					'field_encryption_disabled' => true,
 				)
 			);
 
@@ -4827,7 +5002,7 @@ abstract class GFAddOn {
 				'<div class="push-alert-gold" style="border-left: 1px solid #E6DB55; border-right: 1px solid #E6DB55;">%s</div>',
 				sprintf(
 					esc_html__( '%s has been successfully uninstalled. It can be re-activated from the %splugins page%s.', 'gravityforms' ),
-					$this->_title,
+					esc_html( $this->_title ),
 					'<a href="plugins.php">',
 					'</a>'
 				)
@@ -4891,14 +5066,29 @@ abstract class GFAddOn {
 	}
 
 	/**
+	 * @var array Holds the cached plugin settings.
+	 *
+	 * @since 2.7.17
+	 */
+	private static $_plugin_settings = array();
+
+	/**
 	 * Returns the currently saved plugin settings
 	 *
 	 * @since Unknown
 	 *
-	 * @return array|false
+	 * @since 2.7.17 Added caching of plugin settings and encrypting of settings.
+	 *
+	 * @return array|false Returns the plugin settings or false if the settings haven't been saved yet.
 	 */
 	public function get_plugin_settings() {
-		return get_option( 'gravityformsaddon_' . $this->get_slug() . '_settings' );
+		if ( isset( self::$_plugin_settings[ $this->get_slug() ] ) ) {
+			return self::$_plugin_settings[$this->get_slug() ];
+		}
+
+		self::$_plugin_settings[ $this->get_slug() ] = $this->get_encryptor()->decrypt( get_option( 'gravityformsaddon_' . $this->get_slug() . '_settings' ) );
+
+		return self::$_plugin_settings[ $this->get_slug() ];
 	}
 
 	/**
@@ -4915,7 +5105,6 @@ abstract class GFAddOn {
 
 		$settings = $this->get_plugin_settings();
 		return isset( $settings[ $setting_name ] ) ? $settings[ $setting_name ] : null;
-
 	}
 
 	/**
@@ -4923,10 +5112,14 @@ abstract class GFAddOn {
 	 *
 	 * @since Unknown
 	 *
+	 * @since 2.7.17 Added caching of plugin settings and encrypting of settings.
+	 *
 	 * @param array $settings Plugin settings to be saved.
 	 */
 	public function update_plugin_settings( $settings ) {
-		update_option( 'gravityformsaddon_' . $this->get_slug() . '_settings', $settings );
+
+		self::$_plugin_settings[$this->get_slug() ] = $settings;
+		update_option( 'gravityformsaddon_' . $this->get_slug() . '_settings', $this->get_encryptor()->encrypt( $settings ) );
 	}
 
 	/**
@@ -5010,7 +5203,7 @@ abstract class GFAddOn {
 				<?php wp_nonce_field( 'uninstall', 'gf_addon_uninstall' ) ?>
 				<?php  ?>
 					<h3>
-						<span><i class="fa fa-times"></i> <?php printf( esc_html__( 'Uninstall %s', 'gravityforms' ), $this->get_short_title() ); ?></span>
+						<span><i class="fa fa-times"></i> <?php printf( esc_html__( 'Uninstall %s', 'gravityforms' ), $this->get_short_title() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 					</h3>
 
 					<div class="delete-alert alert_red">
@@ -5020,12 +5213,12 @@ abstract class GFAddOn {
 						</h3>
 
 						<div class="gf_delete_notice">
-							<?php echo $this->uninstall_warning_message() ?>
+							<?php echo $this->uninstall_warning_message(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 						</div>
 
 						<?php
 						$uninstall_button = '<input type="submit" name="uninstall" value="' . sprintf( esc_attr__( 'Uninstall %s', 'gravityforms' ), $this->get_short_title() ) . '" class="button" onclick="return confirm(\'' . esc_js( $this->uninstall_confirm_message() ) . '\');" onkeypress="return confirm(\'' . esc_js( $this->uninstall_confirm_message() ) . '\');"/>';
-						echo $uninstall_button;
+						echo $uninstall_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						?>
 
 					</div>
@@ -5050,12 +5243,12 @@ abstract class GFAddOn {
 
 		?>
 
-		<div class="wrap <?php echo GFCommon::get_browser_class(); ?>">
+		<div class="wrap <?php echo esc_attr( GFCommon::get_browser_class() ); ?>">
 
 			<?php GFCommon::gf_header(); ?>
 
 			<?php if ( $message ) { ?>
-				<div id="message" class="updated"><p><?php echo $message; ?></p></div>
+				<div id="message" class="updated"><p><?php echo $message; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p></div>
 			<?php } ?>
 
 			<div class="gform-settings__wrapper">
@@ -5074,13 +5267,13 @@ abstract class GFAddOn {
 					$url  = add_query_arg( array( 'view' => $tab['name'] ) );
 
 					// Get tab icon.
-					$icon_markup = GFCommon::get_icon_markup( $tab );
+					$icon_markup = GFCommon::get_icon_markup( $tab, 'gform-icon--cog' );
 
 					printf(
 						'<a href="%s"%s><span class="icon">%s</span> <span class="label">%s</span></a>',
 						esc_url( $url ),
 						$current_tab === $tab['name'] ? ' class="active"' : '',
-						is_null( $icon_markup ) ? '<i class="gform-icon gform-icon--cog"></i>' : $icon_markup,
+						$icon_markup, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						esc_html( $label )
 					);
 				}
@@ -5121,7 +5314,7 @@ abstract class GFAddOn {
 				'<div class="alert success">%s</div>',
 				sprintf(
 					esc_html__( '%s has been successfully uninstalled. It can be re-activated from the %splugins page%s.', 'gravityforms' ),
-					$this->_title,
+					esc_html( $this->_title ),
 					'<a href="plugins.php">',
 					'</a>'
 				)
@@ -5327,14 +5520,14 @@ abstract class GFAddOn {
 			<form action="" method="post" class="gform-settings-panel gform-settings-panel__addon-uninstall">
 				<?php wp_nonce_field( 'uninstall', 'gf_addon_uninstall' ); ?>
 				<div class="gform-settings-panel__content">
-					<div class="addon-logo dashicons"><?php echo $icon_markup; ?></div>
+					<div class="addon-logo dashicons"><?php echo $icon_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
 					<div class="addon-uninstall-text">
-						<h4 class="gform-settings-panel__title"><?php printf( esc_html__( '%s', 'gravityforms' ), $this->get_short_title() ) ?></h4>
+						<h4 class="gform-settings-panel__title"><?php printf( esc_html__( '%s', 'gravityforms' ), $this->get_short_title() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h4>
 						<div><?php echo esc_html( $this->uninstall_message() ); ?></div>
 					</div>
 					<div class="addon-uninstall-button">
-						<input id="addon" name="addon" type="hidden" value="<?php echo $this->get_short_title(); ?>">
-						<button type="submit" aria-label="<?php printf( esc_html__( 'Uninstall %s', 'gravityforms'), $this->get_short_title() ); ?>" name="uninstall_addon" value="uninstall" class="button uninstall-addon red" onclick="return confirm('<?php echo esc_js( $this->uninstall_confirm_message() ); ?>');" onkeypress="return confirm('<?php echo esc_js( $this->uninstall_confirm_message() ); ?>');">
+						<input id="addon" name="addon" type="hidden" value="<?php echo $this->get_short_title(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
+						<button type="submit" aria-label="<?php printf( esc_html__( 'Uninstall %s', 'gravityforms'), $this->get_short_title() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" name="uninstall_addon" value="uninstall" class="button uninstall-addon red" onclick="return confirm('<?php echo esc_js( $this->uninstall_confirm_message() ); ?>');" onkeypress="return confirm('<?php echo esc_js( $this->uninstall_confirm_message() ); ?>');">
 							<i class="dashicons dashicons-trash"></i>
 							<?php esc_attr_e( 'Uninstall', 'gravityforms' ); ?>
 						</button>
@@ -5347,7 +5540,7 @@ abstract class GFAddOn {
 			<form action="" method="post" class="gform-settings-panel gform-settings-panel--collapsible gform-settings-panel--collapsed gform-settings-panel__uninstall">
 				<?php wp_nonce_field( 'uninstall', 'gf_addon_uninstall' ); ?>
 				<header class="gform-settings-panel__header">
-					<h4 class="gform-settings-panel__title"><?php printf( esc_html__( 'Uninstall %s Add-On', 'gravityforms' ), $this->get_short_title() ) ?></h4>
+					<h4 class="gform-settings-panel__title"><?php printf( esc_html__( 'Uninstall %s Add-On', 'gravityforms' ), $this->get_short_title() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h4>
 					<span class="gform-settings-panel__collapsible-control">
 						<input
 							type="checkbox"
@@ -5363,7 +5556,7 @@ abstract class GFAddOn {
 				<div class="gform-settings-panel__content">
 
 					<div class="alert error">
-						<?php echo $this->uninstall_warning_message(); ?>
+						<?php echo $this->uninstall_warning_message(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					</div>
 
 					<button type="submit" name="uninstall" value="uninstall" class="button red" onclick="return confirm('<?php echo esc_js( $this->uninstall_confirm_message() ); ?>');" onkeypress="return confirm('<?php echo esc_js( $this->uninstall_confirm_message() ); ?>');"><?php esc_attr_e( 'Uninstall Add-On', 'gravityforms' ); ?></button>
@@ -5394,13 +5587,13 @@ abstract class GFAddOn {
 		<form action="" method="post" class="gform-settings-panel gform-settings-panel__addon-uninstall">
 			<?php wp_nonce_field( 'uninstall', 'gf_addon_uninstall' ); ?>
 			<div class="gform-settings-panel__content">
-				<div class="addon-logo dashicons"><?php echo $icon_markup; ?></div>
+				<div class="addon-logo dashicons"><?php echo $icon_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
 				<div class="addon-uninstall-text">
-					<h4 class="gform-settings-panel__title"><?php printf( esc_html__( '%s', 'gravityforms' ), $this->get_short_title() ) ?></h4>
+					<h4 class="gform-settings-panel__title"><?php printf( esc_html__( '%s', 'gravityforms' ), $this->get_short_title() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h4>
 					<div><?php esc_attr_e( 'To continue uninstalling this add-on click the settings button.', 'gravityforms' ) ?></div>
 				</div>
 				<div class="addon-uninstall-button">
-					<a href="<?php echo esc_url( $url ); ?>" aria-label="<?php echo 'Visit ' . $this->get_short_title() . ' Settings page'; ?>" class="button addon-settings">
+					<a href="<?php echo esc_url( $url ); ?>" aria-label="<?php echo 'Visit ' . $this->get_short_title() . ' Settings page'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" class="button addon-settings">
 						<i class="gform-icon gform-icon--cog"></i>
 						<?php esc_attr_e( 'Settings', 'gravityforms' ); ?>
 					</a>
@@ -5456,18 +5649,16 @@ abstract class GFAddOn {
 
 		// remove entry meta
 		$meta_table = version_compare( GFFormsModel::get_database_version(), '2.3-dev-1', '<' ) ? GFFormsModel::get_lead_meta_table_name() : GFFormsModel::get_entry_meta_table_name();
-		remove_filter( 'query', array( 'GFForms', 'filter_query' ) );
 		foreach ( $forms as $form ) {
 			$all_form_ids[] = $form->id;
 			$entry_meta     = $this->get_entry_meta( array(), $form->id );
 			if ( is_array( $entry_meta ) ) {
 				foreach ( array_keys( $entry_meta ) as $meta_key ) {
-					$sql = $wpdb->prepare( "DELETE from $meta_table WHERE meta_key=%s", $meta_key );
-					$wpdb->query( $sql );
+					$sql = $wpdb->prepare( "DELETE from %i WHERE meta_key=%s", $meta_table, $meta_key );
+					$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 				}
 			}
 		}
-		add_filter( 'query', array( 'GFForms', 'filter_query' ) );
 
 		//remove form settings
 		if ( ! empty( $all_form_ids ) ) {
@@ -5526,12 +5717,12 @@ abstract class GFAddOn {
 	public function plugin_row( $plugin_name, $plugin_data ) {
 		if ( false === $this->_enable_rg_autoupgrade && ! self::is_gravityforms_supported( $this->_min_gravityforms_version ) ) {
 			$message = $this->plugin_message();
-			self::display_plugin_message( $message, true );
+			self::display_plugin_message( $message, 'error' );
 		}
 
 		if ( self::is_gravityforms_supported( $this->_min_gravityforms_version ) && ! self::is_gravityforms_compatible() ) {
 			$message = $this->compatibility_message();
-			self::display_plugin_message( $message, true );
+			self::display_plugin_message( $message, 'error' );
 		}
 
 		if ( ! $this->_enable_rg_autoupgrade ) {
@@ -5539,6 +5730,37 @@ abstract class GFAddOn {
 		}
 
 		GFForms::maybe_display_update_notification( $plugin_name, $plugin_data, $this->get_slug(), $this->_version );
+
+		// Check for Add-on minimum requirements.
+		$minimum_requirements = isset( $plugin_data['minimum_requirements'] ) && is_array( $plugin_data['minimum_requirements'] )
+				? $plugin_data['minimum_requirements']
+				: array();
+
+		$minimum_requirements_evaluation_result = GFCommon::evaluate_minimum_requirements( $minimum_requirements );
+		if ( $minimum_requirements_evaluation_result['block'] == true ) {
+			$plugin_name = $plugin_data['plugin'] ?? '';
+			if ( $plugin_name !== '' ) {
+				// Remove update notification if minimum requirements are not met.
+				add_filter( 'site_transient_update_plugins', function( $value ) use ( $plugin_name ) {
+					if ( isset( $value->response[ $plugin_name ] ) ) {
+						unset( $value->response[ $plugin_name ] );
+					}
+
+					return $value;
+				});
+			}
+
+			$message = $minimum_requirements_evaluation_result['message'];
+			if ( version_compare( $this->_version, $plugin_data['new_version'], '<' ) ) {
+				$details_url         = self_admin_url( 'plugin-install.php?tab=plugin-information&plugin=' . urlencode( $this->_slug ) . '&section=changelog&TB_iframe=true&width=600&height=800' );
+				$message_link_text   = sprintf( esc_html__( 'View version %s details', 'gravityforms' ), $plugin_data['new_version'] );
+				$message_link        = sprintf( '<a href="%s" class="thickbox" title="%s">%s</a>', esc_url( $details_url ), esc_attr( $this->_title ), $message_link_text );
+				$message_new_version = sprintf( esc_html__( 'There is a new version of %s available. %s.', 'gravityforms' ), $this->_title, $message_link );
+				$message             = $message_new_version . ' ' . $message;
+			}
+
+			self::display_plugin_message( $message, 'warning' );
+		}
 	}
 
 	/**
@@ -5566,18 +5788,25 @@ abstract class GFAddOn {
 	}
 
 	/**
-	 * Formats and outs a message for the plugin row.
+	 * Formats and outs a custom message for the plugin row.
 	 *
 	 * Not intended to be overridden or called directly by Add-Ons.
 	 *
-	 * @ignore
+	 * @since Unknown
+	 * @since 2.9.23 Removed $is_error parameter, added $custom_style parameter.
 	 *
-	 * @param      $message
-	 * @param bool $is_error
+	 * @param string $message
+	 * @param string $custom_style
 	 */
-	public static function display_plugin_message( $message, $is_error = false ) {
-		$style = $is_error ? 'style="background-color: #ffebe8;"' : '';
-		echo '</tr><tr class="plugin-update-tr"><td colspan="5" class="plugin-update"><div class="update-message" ' . $style . '>' . $message . '</div></td>';
+	public static function display_plugin_message( $message, $custom_style = '' ) {
+		switch ( $custom_style ) {
+			case 'warning':
+				echo '<tr class="plugin-update-tr update active"><td colspan="4" class="plugin-update colspanchange"><div class="update-message notice inline notice-warning notice-alt"><p>' . $message . '</p></div></td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				break;
+			case 'error':
+				echo '<tr class="plugin-update-tr update active"><td colspan="4" class="plugin-update colspanchange"><div class="update-message notice inline notice-error notice-alt"><p>' . $message . '</p></div></td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				break;
+		}
 	}
 
 	//--------------- Logging -------------------------------------------------------------
@@ -5680,7 +5909,7 @@ abstract class GFAddOn {
 		$gf_locking = new GFAddonLocking( $this->get_locking_config(), $this );
 		$lock_info  = $gf_locking->lock_info( $object_id, false );
 		if ( $echo ) {
-			echo $lock_info;
+			echo $lock_info; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $lock_info;
@@ -5698,7 +5927,7 @@ abstract class GFAddOn {
 		$gf_locking = new GFAddonLocking( $this->get_locking_config(), $this );
 		$class      = $gf_locking->list_row_class( $object_id, false );
 		if ( $echo ) {
-			echo $class;
+			echo $class; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		return $class;
@@ -6205,7 +6434,7 @@ abstract class GFAddOn {
 	 * @return array|null|false If ID is found and is valid form, then the populated Form array is returned.
 	 */
 	public function get_current_form() {
-		return rgempty( 'id', $_GET ) ? false : GFFormsModel::get_form_meta( rgget( 'id' ) );
+		return rgempty( 'id', $_GET ) ? false : GFFormsModel::get_form_meta( rgget( 'id' ) );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	}
 
 	/**
@@ -6213,7 +6442,7 @@ abstract class GFAddOn {
 	 *
 	 */
 	public function is_postback() {
-		return is_array( $_POST ) && count( $_POST ) > 0;
+		return is_array( $_POST ) && count( $_POST ) > 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 	}
 
 	/**
@@ -6232,7 +6461,7 @@ abstract class GFAddOn {
 		*/
 		$save_form_helper = GFForms::get_service_container()->get( GF_Save_Form_Service_Provider::GF_SAVE_FROM_HELPER );
 		if (
-				rgget( 'page' ) == 'gf_edit_forms' && ! rgempty( 'id', $_GET ) && rgempty( 'view', $_GET )
+				GFForms::get_page_query_arg() == 'gf_edit_forms' && ! rgempty( 'id', $_GET ) && rgempty( 'view', $_GET )  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				|| $save_form_helper->is_ajax_save_action()
 		) {
 			return true;
@@ -6246,7 +6475,7 @@ abstract class GFAddOn {
 	 */
 	public function is_form_list() {
 
-		if ( rgget( 'page' ) == 'gf_edit_forms' && rgempty( 'id', $_GET ) && rgempty( 'view', $_GET ) ) {
+		if ( GFForms::get_page_query_arg() == 'gf_edit_forms' && rgempty( 'id', $_GET ) && rgempty( 'view', $_GET ) ) {  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return true;
 		}
 
@@ -6262,7 +6491,7 @@ abstract class GFAddOn {
 	 */
 	public function is_form_settings( $tab = null ) {
 
-		$is_form_settings = rgget( 'page' ) == 'gf_edit_forms' && rgget( 'view' ) == 'settings';
+		$is_form_settings = GFForms::get_page_query_arg() == 'gf_edit_forms' && rgget( 'view' ) == 'settings';
 		$is_tab           = $this->_tab_matches( $tab );
 
 		if ( $is_form_settings && $is_tab ) {
@@ -6281,7 +6510,7 @@ abstract class GFAddOn {
 			$tabs = array( $tabs );
 		}
 
-		$current_tab = rgempty( 'subview', $_GET ) ? 'settings' : rgget( 'subview' );
+		$current_tab = rgempty( 'subview', $_GET ) ? 'settings' : rgget( 'subview' );  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		foreach ( $tabs as $tab ) {
 			if ( strtolower( $tab ) == strtolower( $current_tab ) ) {
@@ -6299,7 +6528,7 @@ abstract class GFAddOn {
 	 */
 	public function is_plugin_settings( $tab = '' ) {
 
-		$is_plugin_settings = rgget( 'page' ) == 'gf_settings';
+		$is_plugin_settings = GFForms::get_page_query_arg() == 'gf_settings';
 		$is_tab             = $this->_tab_matches( $tab );
 
 		if ( $is_plugin_settings && $is_tab ) {
@@ -6318,7 +6547,7 @@ abstract class GFAddOn {
 	 */
 	public function is_app_settings( $tab = '' ) {
 
-		$is_app_settings = rgget( 'page' ) == $this->get_slug() . '_settings';
+		$is_app_settings = GFForms::get_page_query_arg() == $this->get_slug() . '_settings';
 		$is_tab          = $this->_tab_matches( $tab );
 
 		if ( $is_app_settings && $is_tab ) {
@@ -6334,7 +6563,7 @@ abstract class GFAddOn {
 	 */
 	public function is_plugin_page() {
 
-		return strtolower( rgget( 'page' ) ) == strtolower( $this->get_slug() );
+		return GFForms::get_page_query_arg() == strtolower( $this->get_slug() );
 	}
 
 	/**
@@ -6342,7 +6571,7 @@ abstract class GFAddOn {
 	 * @return bool
 	 */
 	public function is_entry_view() {
-		if ( rgget( 'page' ) == 'gf_entries' && rgget( 'view' ) == 'entry' && ( ! isset( $_POST['screen_mode'] ) || rgpost( 'screen_mode' ) == 'view' ) ) {
+		if ( GFForms::get_page_query_arg() == 'gf_entries' && rgget( 'view' ) == 'entry' && ( ! isset( $_POST['screen_mode'] ) || rgpost( 'screen_mode' ) == 'view' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			return true;
 		}
 
@@ -6354,7 +6583,7 @@ abstract class GFAddOn {
 	 * @return bool
 	 */
 	public function is_entry_edit() {
-		if ( rgget( 'page' ) == 'gf_entries' && rgget( 'view' ) == 'entry' && rgpost( 'screen_mode' ) == 'edit' ) {
+		if ( GFForms::get_page_query_arg() == 'gf_entries' && rgget( 'view' ) == 'entry' && rgpost( 'screen_mode' ) == 'edit' ) {
 			return true;
 		}
 
@@ -6362,7 +6591,7 @@ abstract class GFAddOn {
 	}
 
 	public function is_entry_list() {
-		if ( rgget( 'page' ) == 'gf_entries' && ( rgget( 'view' ) == 'entries' || rgempty( 'view', $_GET ) ) ) {
+		if ( GFForms::get_page_query_arg() == 'gf_entries' && ( rgget( 'view' ) == 'entries' || rgempty( 'view', $_GET ) ) ) {  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return true;
 		}
 
@@ -6373,7 +6602,7 @@ abstract class GFAddOn {
 	 * Returns TRUE if the current page is the results page. Otherwise, returns FALSE
 	 */
 	public function is_results() {
-		if ( rgget( 'page' ) == 'gf_entries' && rgget( 'view' ) == 'gf_results_' . $this->get_slug() ) {
+		if ( GFForms::get_page_query_arg() == 'gf_entries' && rgget( 'view' ) == 'gf_results_' . $this->get_slug() ) {
 			return true;
 		}
 
@@ -6478,7 +6707,7 @@ abstract class GFAddOn {
 	 */
 	public function get_slug() {
 		if ( empty( $this->_slug ) ) {
-			$this->_slug = plugin_basename( dirname( $this->_full_path ) );
+			$this->_slug = plugin_basename( dirname( (string) $this->_full_path ) );
 		}
 		return $this->_slug;
 	}

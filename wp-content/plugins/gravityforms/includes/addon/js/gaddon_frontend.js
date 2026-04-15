@@ -25,16 +25,29 @@ var GFFrontendFeeds = function( args ) {
 	self.bindEvents = function() {
 
 		gform.addAction( 'gform_input_change', function( elem, formId, inputId ) {
+			gform.logger.log( 'GFFrontendFeeds: gform_input_change event triggered. formId ' + formId + ', inputId ' + inputId );
 
 			var fieldId = parseInt( inputId ) + '';
 			var isTriggeredInput = $.inArray( inputId, self.triggerInputIds ) !== -1 || $.inArray( fieldId , self.triggerInputIds ) !== -1 ;
 
 			if( self.options.formId == formId && isTriggeredInput ) {
+				gform.logger.log( 'GFFrontendFeeds: Evaluating feeds. self.options.formId=' + self.options.formId + ', isTriggeredInput=' + isTriggeredInput + ', triggerInputIds=' + self.triggerInputIds.join( ',' ) );
 				self.evaluateFeeds();
+			} else {
+				gform.logger.log( 'GFFrontendFeeds: Bypassing feed evaluation. self.options.formId=' + self.options.formId + ', isTriggeredInput=' + isTriggeredInput + ', triggerInputIds=' + self.triggerInputIds.join( ',' ) );
 			}
 		} );
 
 	};
+
+	self.saveToState = function() {
+		const feeds = self.options.feeds.map(({ feedId, isActivated, transactionType }) => ({ feedId, isActivated, transactionType }));
+
+		console.log( 'Saving feeds to state:', feeds );
+		gform.logger.log( 'GFFrontendFeeds: Saving feeds to state: ' + JSON.stringify( feeds ) );
+
+		gform.state.set( self.options.formId, 'feeds', self.options.feeds );
+	}
 
 	self.evaluateFeeds = function() {
 
@@ -67,6 +80,7 @@ var GFFrontendFeeds = function( args ) {
 		gform.doAction( 'gform_{0}_frontend_feeds_evaluated'.gformFormat( feed.addonSlug ), self.options.feeds, self.options.formId, self );
 		gform.doAction( 'gform_{0}_frontend_feeds_evaluated_{0}'.gformFormat( feed.addonSlug, self.options.formId ), self.options.feeds, self.options.formId, self );
 
+		self.saveToState();
 	};
 
 	self.evaluateFeed = function( feed, formId ) {

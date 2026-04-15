@@ -23,14 +23,26 @@ function gf_apply_rules(formId, fields, isInit){
 		gf_apply_field_rule(formId, fields[i], isInit, function(){
 			var is_last_field = ( i >= fields.length - 1 );
 			if( is_last_field ) {
+
+				// Gather the fields that are dependents of the processed fields (inside pages/sections).
+				var dependentFields = [];
+				var dependents = window["gf_form_conditional_logic"][formId]["dependents"][fields[i]];
+				if ( dependents ) {
+					dependents.forEach( function ( dependentFieldId ) {
+						if ( dependentFields.indexOf( dependentFieldId ) === -1 ) {
+							dependentFields.push( dependentFieldId );
+						}
+					});
+				}
+
 				jQuery(document).trigger('gform_post_conditional_logic', [formId, fields, isInit]);
 				gform.utils.trigger( {
 					event: 'gform/conditionalLogic/applyRules/end',
 					native: false,
-					data: { formId: formId, fields: fields, isInit: isInit },
+					data: { formId: formId, fields: fields, dependentFields: dependentFields, isInit: isInit },
 				} );
-				if(window["gformCalculateTotalPrice"]){
-					window["gformCalculateTotalPrice"](formId);
+				if( window.gformCalculateTotalPrice ) {
+					window.gformCalculateTotalPrice( formId );
 				}
 			}
 		});
@@ -255,7 +267,7 @@ function gf_format_number( value, fieldNumberFormat ) {
 	decimalSeparator = '.';
 
 	if( fieldNumberFormat == 'currency' ) {
-		decimalSeparator = gformGetDecimalSeparator( 'currency' );
+		decimalSeparator = gform.Currency.getDecimalSeparator( 'currency' );
 	} else if( fieldNumberFormat == 'decimal_comma' ) {
 		decimalSeparator = ',';
 	} else if( fieldNumberFormat == 'decimal_dot' ) {
@@ -263,7 +275,7 @@ function gf_format_number( value, fieldNumberFormat ) {
 	}
 
 	// transform to a decimal dot number
-	value = gformCleanNumber( value, '', '', decimalSeparator );
+	value = gform.Currency.cleanNumber( value, '', '', decimalSeparator );
 
 	/**
 	 * Looking at format specified by wp locale creates issues. When performing conditional logic, all numbers will be formatted to decimal dot and then compared that way. AC
@@ -292,7 +304,7 @@ function gf_try_convert_float(text){
 	var format = 'decimal_dot';
 	if( gformIsNumeric( text, format ) ) {
 		var decimal_separator = format == "decimal_comma" ? "," : ".";
-		return gformCleanNumber( text, "", "", decimal_separator );
+		return gform.Currency.cleanNumber( text, "", "", decimal_separator );
 	}
 
 	return text;
@@ -315,14 +327,14 @@ function gf_matches_operation(val1, val2, operation){
 			val1 = gf_try_convert_float(val1);
 			val2 = gf_try_convert_float(val2);
 
-			return gformIsNumber(val1) && gformIsNumber(val2) ? val1 > val2 : false;
+			return gform.utils.isNumber(val1) && gform.utils.isNumber(val2) ? val1 > val2 : false;
 			break;
 
 		case "<" :
 			val1 = gf_try_convert_float(val1);
 			val2 = gf_try_convert_float(val2);
 
-			return gformIsNumber(val1) && gformIsNumber(val2) ? val1 < val2 : false;
+			return gform.utils.isNumber(val1) && gform.utils.isNumber(val2) ? val1 < val2 : false;
 			break;
 
 		case "contains" :
@@ -559,6 +571,12 @@ function gf_hide_button( $target ) {
 
 function gf_reset_to_default(targetId, defaultValue){
 
+	var $target = jQuery( targetId );
+    if( $target.hasClass('gfield_shipping') || $target.hasClass('gfield_total') ||
+        $target.hasClass('gfield--type-shipping') || $target.hasClass('gfield--type-total') ) {
+        return;
+    }
+
 	var dateFields = jQuery( targetId ).find( '.gfield_date_month input, .gfield_date_day input, .gfield_date_year input, .gfield_date_dropdown_month select, .gfield_date_dropdown_day select, .gfield_date_dropdown_year select' );
 	if( dateFields.length > 0 ) {
 
@@ -639,7 +657,7 @@ function gf_reset_to_default(targetId, defaultValue){
 				var inputId = element.attr( 'id' ).split( '_' ).slice( 2 ).join( '.' );
 				val = defaultValue[ inputId ];
 			}
-			if( ! val && element.attr( 'name' ) ) {
+			if( ! val && element.attr( 'name' ) && element.attr( 'type' ) != 'email' ) {
 				var inputId = element.attr( 'name' ).split( '_' )[1];
 				val = defaultValue[ inputId ];
 			}

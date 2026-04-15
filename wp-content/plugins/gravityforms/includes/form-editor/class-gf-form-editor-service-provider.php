@@ -5,8 +5,10 @@ namespace Gravity_Forms\Gravity_Forms\Form_Editor;
 use Gravity_Forms\Gravity_Forms\Config\GF_Config_Service_Provider;
 use Gravity_Forms\Gravity_Forms\Form_Editor\Choices_UI\Config\GF_Choices_UI_Config;
 use Gravity_Forms\Gravity_Forms\Form_Editor\Choices_UI\Config\GF_Choices_UI_Config_I18N;
+use Gravity_Forms\Gravity_Forms\Form_Editor\Choices_UI\Config\GF_Dialog_Config_I18N;
 use Gravity_Forms\Gravity_Forms\Form_Editor\Save_Form\Config\GF_Form_Editor_Form_Save_Config;
 use Gravity_Forms\Gravity_Forms\Form_Editor\Save_Form\Endpoints\GF_Save_Form_Endpoint_Form_Editor;
+use Gravity_Forms\Gravity_Forms\Form_Editor\Submitted_Fields\Endpoints\GF_Submitted_Fields_Endpoint;
 use Gravity_Forms\Gravity_Forms\Form_Editor\Renderer\GF_Form_Editor_Renderer;
 use Gravity_Forms\Gravity_Forms\GF_Service_Container;
 use Gravity_Forms\Gravity_Forms\GF_Service_Provider;
@@ -25,6 +27,7 @@ class GF_Form_Editor_Service_Provider extends GF_Service_Provider {
 	// Configs
 	const CHOICES_UI_CONFIG       = 'embed_config';
 	const CHOICES_UI_CONFIG_I18N  = 'embed_config_i18n';
+	const DIALOG_CONFIG_I18N      = 'dialog_config_i18n';
 	const FORM_EDITOR_SAVE_CONFIG = 'form_editor_save_config';
 	const FORM_EDITOR_RENDERER    = 'form_editor_renderer';
 
@@ -38,6 +41,7 @@ class GF_Form_Editor_Service_Provider extends GF_Service_Provider {
 	protected $configs = array(
 		self::CHOICES_UI_CONFIG       => GF_Choices_UI_Config::class,
 		self::CHOICES_UI_CONFIG_I18N  => GF_Choices_UI_Config_I18N::class,
+		self::DIALOG_CONFIG_I18N      => GF_Dialog_Config_I18N::class,
 		self::FORM_EDITOR_SAVE_CONFIG => GF_Form_Editor_Form_Save_Config::class,
 	);
 
@@ -47,7 +51,8 @@ class GF_Form_Editor_Service_Provider extends GF_Service_Provider {
 
 	// Endpoint names, used as keys for the endpoint classes in the service container.
 	// keys are the same names for the ajax actions.
-	const ENDPOINT_FORM_EDITOR_SAVE = 'form_editor_save_form';
+	const ENDPOINT_FORM_EDITOR_SAVE  = 'form_editor_save_form';
+	const ENDPOINT_SUBMITTED_FIELDS  = 'gf_get_submitted_fields';
 
 	/**
 	 * The endpoint class names and their corresponding string keys in the service container.
@@ -58,15 +63,24 @@ class GF_Form_Editor_Service_Provider extends GF_Service_Provider {
 	 */
 	protected $endpoints = array(
 		self::ENDPOINT_FORM_EDITOR_SAVE => GF_Save_Form_Endpoint_Form_Editor::class,
+		self::ENDPOINT_SUBMITTED_FIELDS => GF_Submitted_Fields_Endpoint::class,
 	);
 
 	public function register( GF_Service_Container $container ) {
+		// Dialog Alert Config
+		require_once( plugin_dir_path( __FILE__ ) . '/dialog-alert/config/class-gf-dialog-config-i18n.php' );
+
 		// Choices UI Configs
 		require_once( plugin_dir_path( __FILE__ ) . '/choices-ui/config/class-gf-choices-ui-config.php' );
 		require_once( plugin_dir_path( __FILE__ ) . '/choices-ui/config/class-gf-choices-ui-config-i18n.php' );
+
 		// Form Saver Configs
 		require_once plugin_dir_path( __FILE__ ) . 'save-form/config/class-gf-form-editor-form-save-config.php';
 		require_once plugin_dir_path( __FILE__ ) . 'save-form/endpoints/class-gf-save-form-endpoint-form-editor.php';
+
+		// Submitted Fields Endpoint
+		require_once plugin_dir_path( __FILE__ ) . 'submitted-fields/endpoints/class-gf-submitted-fields-endpoint.php';
+
 		// Editor Renderers.
 		require_once plugin_dir_path( __FILE__ ) . 'renderer/class-gf-form-editor-renderer.php';
 
@@ -153,6 +167,7 @@ class GF_Form_Editor_Service_Provider extends GF_Service_Provider {
 			'gform_ajax_actions',
 			function( $ajax_actions ) {
 				$ajax_actions[] = GF_Save_Form_Endpoint_Form_Editor::ACTION_NAME;
+				$ajax_actions[] = GF_Submitted_Fields_Endpoint::ACTION_NAME;
 
 				return $ajax_actions;
 			}
@@ -162,6 +177,13 @@ class GF_Form_Editor_Service_Provider extends GF_Service_Provider {
 			'wp_ajax_' . GF_Save_Form_Endpoint_Form_Editor::ACTION_NAME,
 			function () use ( $container ) {
 				$container->get( self::ENDPOINT_FORM_EDITOR_SAVE )->handle();
+			}
+		);
+
+		add_action(
+			'wp_ajax_' . GF_Submitted_Fields_Endpoint::ACTION_NAME,
+			function () use ( $container ) {
+				$container->get( self::ENDPOINT_SUBMITTED_FIELDS )->handle();
 			}
 		);
 

@@ -9,7 +9,7 @@ class MakespaceChild {
 		add_action( 'acf/init', array( $this, 'msw_acf_init' ) );
 		add_action( 'wp_loaded', array( $this, 'msw_loaded' ) );
 		add_action( 'init', array( $this, 'msw_ajax_atc') );
-		// add_action( 'pre_get_posts', array( $this, 'pre_get_posts') );
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts') );
 
 		add_filter( 'wpseo_breadcrumb_links', array( $this, 'add_cpt_archive_parent_breadcrumb' ), 10, 1);
 
@@ -17,7 +17,7 @@ class MakespaceChild {
 		// add_shortcode( 'first_name', array( $this, 'fname') );
 		add_shortcode( 'child_pages', array( $this, 'sc_child_pages') );
 		
-		//$this->custom_post_types();
+		$this->custom_post_types();
 		$this->modify_pt(); //may need Yoast Test Helper plugin - Reset Indexables tables & migrations
 
 	}
@@ -37,9 +37,9 @@ class MakespaceChild {
 		/* filters */
 		
 		//staff
-		// add_filter( 'staff_module_slug', function(){ return 'our-team'; }, 100, 1 );
-		// add_filter( 'staff_module_single_name', function(){ return 'Team Member'; }, 100, 1 );
-		// add_filter( 'staff_module_plural_name', function(){ return 'Our Team'; }, 100, 1 );
+		add_filter( 'staff_module_slug', function(){ return 'our-attorneys'; }, 100, 1 );
+		add_filter( 'staff_module_single_name', function(){ return 'Attorney'; }, 100, 1 );
+		add_filter( 'staff_module_plural_name', function(){ return 'Our Attorneys'; }, 100, 1 );
 		// add_filter( 'staff_module_menu_icon', function(){ return 'dashicons-businessman'; }, 100, 1 );
 		// add_filter( 'staff_module_taxonomy_slug', function(){ return 'department'; }, 100, 1 );
 		// add_filter( 'staff_module_taxonomy_single_name', function(){ return 'Department'; }, 100, 1 );
@@ -100,7 +100,7 @@ class MakespaceChild {
 
 		// add_theme_support( 'case-studies-module' );
 		// add_theme_support( 'locations-module' );
-		// add_theme_support( 'staff-module' );
+		add_theme_support( 'staff-module' );
 		// add_theme_support( 'events-module' );
 	}
 
@@ -230,28 +230,28 @@ class MakespaceChild {
 
 	function custom_post_types() {
 
-		// register_post_type( 'service', array(
-		// 	'label' => 'Services',
-		// 	'labels' => array(
-		// 		'name' => 'Services',
-		// 		'singular_name' => 'Service',
-		// 	),
-		// 	'has_archive' => 'services',
-		// 	'hierarchical' => true,
-		// 	'public' => true,
-		// 	'supports' => array( 'title', 'editor', 'excerpt', 'revisions', 'page-attributes' ),
-		// 	'menu_icon' => 'dashicons-lightbulb',
-			// 'show_in_rest' => true,
-		// 	'rewrite' => array(
-		// 		'slug' =>  'services'
-		// 	)
-		// ) );
+		register_post_type( 'case_result', array(
+			'label' => 'Case Results',
+			'labels' => array(
+				'name' => 'Case Results',
+				'singular_name' => 'Case Result',
+			),
+			'has_archive' => 'case-results',
+			'hierarchical' => true,
+			'public' => true,
+			'supports' => array( 'title', 'editor', 'excerpt', 'revisions', 'page-attributes' ),
+			'menu_icon' => 'dashicons-portfolio',
+			'show_in_rest' => true,
+			'rewrite' => array(
+				'slug' =>  'case-results'
+			)
+		) );
 
-		// register_taxonomy( 'service_category', 'service', array(
-		// 	'label' => 'Categories',
-		// 	'labels' => array(
-		// 		'name' => 'Categories',
-		// 		'singular_name' => 'Category',
+		register_taxonomy( 'case_category', 'case_result', array(
+			'label' => 'Case Result Categories',
+			'labels' => array(
+				'name' => 'Case Result Categories',
+				'singular_name' => 'Case Result Category',
 
 				// 'search_items' => 'Search Categories',
 				// 'popular_items' => 'Popular Categories', //This label is only used for non-hierarchical taxonomies.
@@ -271,33 +271,165 @@ class MakespaceChild {
 				// 'filter_by_item' => 'Filter by category', //This label is only used for hierarchical taxonomies
 				// 'item_link' => 'Category Link',
 				// 'item_link_description' => 'A link to a category'
+			),
+			'hierarchical' => true,
+			'show_admin_column' => true,
+			'show_in_rest' => true
+		) );
 
-		// 	),
-		// 	'hierarchical' => true,
-		// 	'show_admin_column' => true,
-			// 'show_in_rest' => true
-		// ) );
+		register_taxonomy( 'case_outcome', 'case_result', array(
+			'label' => 'Case Result Outcomes',
+			'labels' => array(
+				'name' => 'Case Result Outcomes',
+				'singular_name' => 'Case Result Outcome',
 
-		// add_action('acf/init', function() {
-			// acf_add_options_sub_page( array(
-			// 	'page_title' => 'Services Settings',
-			// 	'menu_title' => 'Services Settings',
-			// 	'menu_slug' => 'service-archive-settings',
-			// 	'parent_slug' => 'edit.php?post_type=service'
-			// ) );
-		// });
+				// 'search_items' => 'Search Categories',
+				// 'popular_items' => 'Popular Categories', //This label is only used for non-hierarchical taxonomies.
+				// 'all_items' => 'All Categories',
+				// 'parent_item' => 'Parent Category', //This label is only used for hierarchical taxonomies.
+				// 'parent_item_colon' => 'Parent Category:', //The same as parent_item, but with colon : in the end.
+				// 'edit_item' => 'Edit Category',
+				// 'view_item' => 'View Category',
+				// 'update_item' => 'Update Category',
+				// 'add_new_item' => 'Add New Category',
+				// 'new_item_name' => 'New Category Name',
+				// 'separate_items_with_commas' =>  'Separate tags with commas', //This label is only used for non-hierarchical taxonomies.
+				// 'add_or_remove_items' => 'Add or remove tags', // This label is only used for non-hierarchical taxonomies. 
+				// 'choose_from_most_used' => 'Choose from the most used tags', //This label is only used on non-hierarchical taxonomies.
+				// 'not_found' => 'No categories found',
+				// 'no_terms' => 'No categories',
+				// 'filter_by_item' => 'Filter by category', //This label is only used for hierarchical taxonomies
+				// 'item_link' => 'Category Link',
+				// 'item_link_description' => 'A link to a category'
+			),
+			'hierarchical' => true,
+			'show_admin_column' => true,
+			'show_in_rest' => true
+		) );
+
+		add_action('acf/init', function() {
+			acf_add_options_sub_page( array(
+				'page_title' => 'Case Results Settings',
+				'menu_title' => 'Case Results Settings',
+				'menu_slug' => 'case_result-archive-settings',
+				'parent_slug' => 'edit.php?post_type=case_result'
+			) );
+		});
+
+
+		register_post_type( 'review', array(
+			'label' => 'Reviews',
+			'labels' => array(
+				'name' => 'Reviews',
+				'singular_name' => 'Review',
+			),
+			'has_archive' => 'reviews',
+			'hierarchical' => true,
+			'public' => true,
+			'supports' => array( 'title', 'editor', 'excerpt', 'revisions', 'page-attributes' ),
+			'menu_icon' => 'dashicons-testimonial',
+			'show_in_rest' => true,
+			'rewrite' => array(
+				'slug' =>  'reviews'
+			)
+		) );
+
+		register_taxonomy( 'review_category', 'review', array(
+			'label' => 'Reviews Categories',
+			'labels' => array(
+				'name' => 'Reviews Categories',
+				'singular_name' => 'Reviews Category',
+			),
+			'hierarchical' => true,
+			'show_admin_column' => true,
+			'show_in_rest' => true
+		) );
+
+		add_action('acf/init', function() {
+			acf_add_options_sub_page( array(
+				'page_title' => 'Reviews Settings',
+				'menu_title' => 'Reviews Settings',
+				'menu_slug' => 'review-archive-settings',
+				'parent_slug' => 'edit.php?post_type=review'
+			) );
+		});
+
+
+		register_post_type( 'faq', array(
+			'label' => 'FAQ',
+			'labels' => array(
+				'name' => 'FAQ',
+				'singular_name' => 'FAQ',
+			),
+			'has_archive' => 'faq',
+			'hierarchical' => true,
+			'public' => true,
+			'supports' => array( 'title', 'editor', 'excerpt', 'revisions', 'page-attributes' ),
+			'menu_icon' => 'dashicons-editor-help',
+			'show_in_rest' => true,
+			// 'rewrite' => array(
+			// 	'slug' =>  'faqs'
+			// )
+		) );
+
+		register_taxonomy( 'faq_category', 'faq', array(
+			'label' => 'FAQ Categories',
+			'labels' => array(
+				'name' => 'FAQ Categories',
+				'singular_name' => 'FAQ Category',
+			),
+			'hierarchical' => true,
+			'show_admin_column' => true,
+			'show_in_rest' => true
+		) );
+
+		add_action('acf/init', function() {
+			acf_add_options_sub_page( array(
+				'page_title' => 'FAQ Settings',
+				'menu_title' => 'FAQ Settings',
+				'menu_slug' => 'faq-archive-settings',
+				'parent_slug' => 'edit.php?post_type=faq'
+			) );
+		});
+
+
+		register_post_type( 'practice_area', array(
+			'label' => 'Practice Areas',
+			'labels' => array(
+				'name' => 'Practice Areas',
+				'singular_name' => 'Practice Area',
+			),
+			'has_archive' => 'practice-areas',
+			'hierarchical' => true,
+			'public' => true,
+			'supports' => array( 'title', 'editor', 'excerpt', 'revisions', 'page-attributes' ),
+			'menu_icon' => 'dashicons-bank',
+			'show_in_rest' => true,
+			'rewrite' => array(
+				'slug' =>  'practice-areas'
+			)
+		) );
+		
+		add_action('acf/init', function() {
+			acf_add_options_sub_page( array(
+				'page_title' => 'Practice Areas Settings',
+				'menu_title' => 'Practice Areas Settings',
+				'menu_slug' => 'practice_area-archive-settings',
+				'parent_slug' => 'edit.php?post_type=practice_area'
+			) );
+		});
 	}
 
 	function pre_get_posts( $query ){
-		// if( $query->is_main_query() && ! is_admin() ){
+		if( $query->is_main_query() && ! is_admin() ){
 
-		// 	if ( is_post_type_archive( 'service' ) ){
-		// 		$query->set( 'orderby', 'menu_order' );
-		// 		$query->set( 'order', 'ASC' );
-		// 		$query->set( 'posts_per_page', -1 );
-		// 	}
+			// if ( is_post_type_archive( 'service' ) ){
+			// 	$query->set( 'orderby', 'menu_order' );
+			// 	$query->set( 'order', 'ASC' );
+			// 	$query->set( 'posts_per_page', -1 );
+			// }
 
-		// }
+		}
 	}
 
 	/* get first name of staff (first word of post title) and convert to possessive ( Bob -> Bob's, Kris -> Kris', etc )*/
