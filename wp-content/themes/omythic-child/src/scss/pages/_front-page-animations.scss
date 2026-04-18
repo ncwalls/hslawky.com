@@ -1,0 +1,539 @@
+// ============================================================
+//  HOME PAGE — SCROLL ANIMATIONS
+//
+//  Pattern:
+//   .js &       — pre-animation (hidden) state, only when <body>.js
+//   &.vis       — in-view state, set by the IntersectionObserver when
+//                 the element enters the viewport
+//
+//  IMPORTANT: always nest `.js &` INSIDE `&.vis`, never `&.vis .js &`
+//  (that compiles to .foo.vis .js .foo which never matches).
+//
+//  Triggers are granular: no section is a single trigger. Each header,
+//  grid, CTA, etc. is its own .scroll-animate-item so it fires when it
+//  actually becomes visible.
+// ============================================================
+
+.home {
+
+	// ============================================================
+	//  HERO — container is the trigger, children stagger
+	// ============================================================
+	.hero .hero-content .container {
+
+		.hero-title,
+		.hero-subtitle,
+		.hero-subsubtitle,
+		.button,
+		.hero-phone {
+			.js & {
+				opacity: 0;
+				transform: translateY(2rem);
+				transition: opacity 0.7s, transform 0.7s;
+			}
+		}
+
+		.hero-title {
+			.js & { transform: translateY(-1.5rem); }
+		}
+
+		&.vis {
+			.js & {
+				.hero-title,
+				.hero-subtitle,
+				.hero-subsubtitle,
+				.button,
+				.hero-phone {
+					opacity: 1;
+					transform: translateY(0);
+				}
+				.hero-title       { transition-delay: 0.10s; }
+				.hero-subtitle    { transition-delay: 0.25s; }
+				.hero-subsubtitle { transition-delay: 0.40s; }
+				.button           { transition-delay: 0.55s; }
+				.hero-phone       { transition-delay: 0.70s; }
+			}
+		}
+	}
+
+
+	// ============================================================
+	//  INTRO — left slides in from left, right slides in from right
+	// ============================================================
+	.home-intro {
+
+		.intro-left {
+			.js & {
+				opacity: 0;
+				transform: translateX(-3rem);
+				transition: opacity 0.6s, transform 0.6s;
+			}
+
+			.section-title,
+			.wysiwyg,
+			.intro-logos,
+			.section-buttons {
+				.js & {
+					opacity: 0;
+					transform: translateY(1.5rem);
+					transition: opacity 0.5s, transform 0.5s;
+				}
+			}
+
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateX(0);
+
+					.section-title    { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
+					.wysiwyg          { opacity: 1; transform: translateY(0); transition-delay: 0.30s; }
+					.intro-logos      { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
+					.section-buttons  { opacity: 1; transform: translateY(0); transition-delay: 0.60s; }
+				}
+			}
+		}
+
+		.intro-right {
+			.js & {
+				opacity: 0;
+				transform: translateX(3rem);
+				transition: opacity 0.6s, transform 0.6s;
+			}
+
+			.section-title,
+			.wysiwyg {
+				.js & {
+					opacity: 0;
+					transform: translateY(1rem);
+					transition: opacity 0.5s, transform 0.5s;
+				}
+			}
+
+			// signature keeps its -5.5deg rotation
+			.signature {
+				.js & {
+					opacity: 0;
+					transform: translateY(1rem) rotate(-5.5deg);
+					transition: opacity 0.5s, transform 0.5s;
+				}
+			}
+
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateX(0);
+
+					.section-title { opacity: 1; transform: translateY(0); transition-delay: 0.20s; }
+					.wysiwyg       { opacity: 1; transform: translateY(0); transition-delay: 0.35s; }
+					.signature     { opacity: 1; transform: translateY(0) rotate(-5.5deg); transition-delay: 0.50s; }
+				}
+			}
+		}
+	}
+
+
+	// ============================================================
+	//  PRACTICE AREAS — header, card grid, CTA bar all separate
+	// ============================================================
+	.home-practice-areas {
+
+		.section-header {
+			.js & {
+				opacity: 0;
+				transform: translateY(-1.5rem);
+				transition: opacity 0.6s, transform 0.6s;
+			}
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		}
+
+		.practice-areas-grid {
+			.practice-area-card {
+				.js & {
+					opacity: 0;
+					transform: translateY(3rem) scale(0.96);
+					transition: opacity 0.55s, transform 0.55s;
+				}
+			}
+
+			&.vis {
+				.js & {
+					.practice-area-card {
+						opacity: 1;
+						transform: translateY(0) scale(1);
+					}
+					.practice-area-card:nth-child(1) { transition-delay: 0.05s; }
+					.practice-area-card:nth-child(2) { transition-delay: 0.15s; }
+					.practice-area-card:nth-child(3) { transition-delay: 0.25s; }
+					.practice-area-card:nth-child(4) { transition-delay: 0.35s; }
+					.practice-area-card:nth-child(5) { transition-delay: 0.45s; }
+					.practice-area-card:nth-child(6) { transition-delay: 0.55s; }
+				}
+			}
+		}
+
+		.section-cta .container {
+			.js & {
+				opacity: 0;
+				transform: translateY(1.5rem);
+				transition: opacity 0.5s, transform 0.5s;
+			}
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		}
+	}
+
+
+	// ============================================================
+	//  ADVANTAGES — header + grid
+	// ============================================================
+	.home-advantages {
+
+		.section-header {
+			.js & {
+				opacity: 0;
+				transform: translateY(-1.5rem);
+				transition: opacity 0.6s, transform 0.6s;
+			}
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		}
+
+		.advantages-grid {
+			.advantage-card {
+				.js & {
+					opacity: 0;
+					transform: translateY(2rem);
+					transition: opacity 0.5s, transform 0.5s;
+				}
+			}
+
+			&.vis {
+				.js & {
+					.advantage-card {
+						opacity: 1;
+						transform: translateY(0);
+					}
+					.advantage-card:nth-child(1) { transition-delay: 0.05s; }
+					.advantage-card:nth-child(2) { transition-delay: 0.15s; }
+					.advantage-card:nth-child(3) { transition-delay: 0.25s; }
+					.advantage-card:nth-child(4) { transition-delay: 0.35s; }
+					.advantage-card:nth-child(5) { transition-delay: 0.45s; }
+					.advantage-card:nth-child(6) { transition-delay: 0.55s; }
+					.advantage-card:nth-child(7) { transition-delay: 0.65s; }
+					.advantage-card:nth-child(8) { transition-delay: 0.75s; }
+				}
+			}
+		}
+	}
+
+
+	// ============================================================
+	//  STAFF — header + inner grid (each card rises, photo scales in)
+	// ============================================================
+	.home-staff {
+
+		.section-header {
+			.js & {
+				opacity: 0;
+				transform: translateY(-1.5rem);
+				transition: opacity 0.6s, transform 0.6s;
+			}
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		}
+
+		.staff-grid-inner {
+			.staff-card {
+				.js & {
+					opacity: 0;
+					transform: translateY(3rem);
+					transition: opacity 0.6s, transform 0.6s;
+				}
+
+				.staff-photo {
+					.js & {
+						opacity: 0;
+						transform: scale(0.85);
+						transition: opacity 0.5s, transform 0.5s;
+					}
+				}
+			}
+
+			&.vis {
+				.js & {
+					.staff-card {
+						opacity: 1;
+						transform: translateY(0);
+					}
+					.staff-card:nth-child(1) { transition-delay: 0.10s; }
+					.staff-card:nth-child(2) { transition-delay: 0.25s; }
+					.staff-card:nth-child(3) { transition-delay: 0.40s; }
+					.staff-card:nth-child(4) { transition-delay: 0.55s; }
+
+					.staff-card .staff-photo {
+						opacity: 1;
+						transform: scale(1);
+					}
+					.staff-card:nth-child(1) .staff-photo { transition-delay: 0.25s; }
+					.staff-card:nth-child(2) .staff-photo { transition-delay: 0.40s; }
+					.staff-card:nth-child(3) .staff-photo { transition-delay: 0.55s; }
+					.staff-card:nth-child(4) .staff-photo { transition-delay: 0.70s; }
+				}
+			}
+		}
+	}
+
+
+	// ============================================================
+	//  CTA 1 — green gradient band
+	// ============================================================
+	.home-cta-1 .container {
+
+		.section-title,
+		.section-intro,
+		.button {
+			.js & {
+				opacity: 0;
+				transform: translateY(1.5rem);
+				transition: opacity 0.5s, transform 0.5s;
+			}
+		}
+
+		&.vis {
+			.js & {
+				.section-title { opacity: 1; transform: translateY(0); transition-delay: 0.05s; }
+				.section-intro { opacity: 1; transform: translateY(0); transition-delay: 0.20s; }
+				.button        { opacity: 1; transform: translateY(0); transition-delay: 0.35s; }
+			}
+		}
+	}
+
+
+	// ============================================================
+	//  RESULTS — header, grid (staggered cards), note, buttons
+	// ============================================================
+	.home-results {
+
+		.section-header {
+			.js & {
+				opacity: 0;
+				transform: translateY(-1.5rem);
+				transition: opacity 0.6s, transform 0.6s;
+			}
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		}
+
+		.results-grid {
+			.result-card {
+				.js & {
+					opacity: 0;
+					transform: translateY(3rem) scale(0.96);
+					transition: opacity 0.55s, transform 0.55s;
+				}
+			}
+
+			&.vis {
+				.js & {
+					.result-card {
+						opacity: 1;
+						transform: translateY(0) scale(1);
+					}
+					.result-card:nth-child(1) { transition-delay: 0.05s; }
+					.result-card:nth-child(2) { transition-delay: 0.15s; }
+					.result-card:nth-child(3) { transition-delay: 0.25s; }
+					.result-card:nth-child(4) { transition-delay: 0.35s; }
+					.result-card:nth-child(5) { transition-delay: 0.45s; }
+					.result-card:nth-child(6) { transition-delay: 0.55s; }
+				}
+			}
+		}
+
+		.results-note {
+			.js & {
+				opacity: 0;
+				transform: translateY(1rem);
+				transition: opacity 0.5s, transform 0.5s;
+			}
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		}
+
+		.section-buttons {
+			.js & {
+				opacity: 0;
+				transform: translateY(1rem);
+				transition: opacity 0.5s, transform 0.5s;
+			}
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		}
+	}
+
+
+	// ============================================================
+	//  REVIEWS — header + slider
+	// ============================================================
+	.home-reviews {
+
+		.section-header {
+			.js & {
+				opacity: 0;
+				transform: translateY(-1.5rem);
+				transition: opacity 0.6s, transform 0.6s;
+			}
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		}
+
+		.reviews-slider-wrap {
+			.js & {
+				opacity: 0;
+				transform: translateY(2rem);
+				transition: opacity 0.6s, transform 0.6s;
+			}
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		}
+	}
+
+
+	// ============================================================
+	//  FAQ — header + list
+	// ============================================================
+	.home-faq {
+
+		.section-header {
+			.js & {
+				opacity: 0;
+				transform: translateY(-1.5rem);
+				transition: opacity 0.6s, transform 0.6s;
+			}
+			&.vis {
+				.js & {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		}
+
+		.faq-list {
+			> li {
+				.js & {
+					opacity: 0;
+					transform: translateY(1.5rem);
+					transition: opacity 0.5s, transform 0.5s;
+				}
+			}
+
+			&.vis {
+				.js & {
+					> li {
+						opacity: 1;
+						transform: translateY(0);
+					}
+					> li:nth-child(1) { transition-delay: 0.05s; }
+					> li:nth-child(2) { transition-delay: 0.13s; }
+					> li:nth-child(3) { transition-delay: 0.21s; }
+					> li:nth-child(4) { transition-delay: 0.29s; }
+					> li:nth-child(5) { transition-delay: 0.37s; }
+					> li:nth-child(6) { transition-delay: 0.45s; }
+					> li:nth-child(7) { transition-delay: 0.53s; }
+					> li:nth-child(8) { transition-delay: 0.61s; }
+				}
+			}
+		}
+	}
+
+
+	// ============================================================
+	//  CTA 2 — "Still Have Questions?" beige band
+	// ============================================================
+	.home-cta-2 .container {
+
+		.section-title,
+		.section-intro,
+		.button {
+			.js & {
+				opacity: 0;
+				transform: translateY(1.5rem);
+				transition: opacity 0.5s, transform 0.5s;
+			}
+		}
+
+		&.vis {
+			.js & {
+				.section-title { opacity: 1; transform: translateY(0); transition-delay: 0.05s; }
+				.section-intro { opacity: 1; transform: translateY(0); transition-delay: 0.20s; }
+				.button        { opacity: 1; transform: translateY(0); transition-delay: 0.35s; }
+			}
+		}
+	}
+
+
+	// ============================================================
+	//  CTA 3 — phone bar (left info slides in, phone pill slides in)
+	// ============================================================
+	.home-cta-3 .container {
+
+		.cta-3-left {
+			.js & {
+				opacity: 0;
+				transform: translateX(-2rem);
+				transition: opacity 0.6s, transform 0.6s;
+			}
+		}
+
+		.cta-3-phone {
+			.js & {
+				opacity: 0;
+				transform: translateX(2rem);
+				transition: opacity 0.6s, transform 0.6s;
+			}
+		}
+
+		&.vis {
+			.js & {
+				.cta-3-left  { opacity: 1; transform: translateX(0); transition-delay: 0.10s; }
+				.cta-3-phone { opacity: 1; transform: translateX(0); transition-delay: 0.30s; }
+			}
+		}
+	}
+}

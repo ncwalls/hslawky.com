@@ -148,8 +148,8 @@
 		padding: $header-height 0 10vh;
 		text-align: center;
 
-		@media (max-width: $phablet) {
-			padding-bottom: 5vh;
+		@media (max-width: $tablet) {
+			padding-bottom: 2rem;
 		}
 
 		.container {
@@ -209,11 +209,33 @@
 	.button{
 		margin-top: 4rem;
 
-		@media (max-width: $mobile) {
+		@media (max-width: $tablet) {
 			margin-top: 3rem;
 		}
 	}
 
+	.hero-phone{
+		color: $brand-gold;
+		font-size: 3.2rem;
+		line-height: 1;
+		position: absolute;
+		right: 2rem;
+		bottom: 2.5rem;
+		z-index: 10;
+
+		@media (max-width: $tablet) {
+			display: block;
+			font-size: 2.8rem;
+			margin: 2rem auto 0 auto;
+			position: relative;
+			right: 0;
+			bottom: 0;
+		}
+
+		&:hover{
+			color: #fff;
+		}
+	}
 }
 
 
@@ -447,18 +469,6 @@
 	}
 
 	.practice-area-card {
-		border-radius: 1.3rem;
-		transition: all 0.3s;
-
-		&:hover {
-			background: #343434;
-			box-shadow: 0 0.3rem 2.3rem rgba(0, 0, 0, 0.44);
-
-			.card-title,
-			.card-more {
-				color: $brand-gold;
-			}
-		}
 	}
 
 	.practice-area-card-inner {
@@ -468,9 +478,21 @@
 		color: inherit;
 		text-decoration: none;
 		height: 100%;
+		transition: all 0.3s;
+		border-radius: 1.3rem;
 
 		@media (max-width: $laptop) {
 			padding: 2rem;
+		}
+
+		&:hover {
+			background: #343434;
+			box-shadow: 0 0.3rem 2.3rem rgba(0, 0, 0, 0.44);
+
+			.card-title,
+			.card-more {
+				color: $brand-gold;
+			}
 		}
 	}
 

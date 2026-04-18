@@ -13,8 +13,8 @@
 		box-shadow: 0 2px 12px rgba(#000, 0.25);
 		
 		.inner {
-			padding-top: 2rem;
-			padding-bottom: 2rem;
+			padding-top: 1rem;
+			padding-bottom: 1rem;
 			
 			@media (max-width: $tablet) {
 				padding-top: 1rem;
@@ -38,7 +38,7 @@
 	
 		@media (max-width: $tablet) {
 			align-items: center;
-			padding: 3rem 2rem;
+			padding: 2rem;
 		}
 	}
 
@@ -90,7 +90,7 @@
 	}
 	
 	.scrolled & {
-		padding-top: 1rem;
+		padding-top: 1.5rem;
 	}
 
 	@media (max-width: $mobile-nav-breakpoint) {
@@ -246,7 +246,7 @@
 	}
 	
 	.scrolled & {
-		margin-top: 1rem;
+		margin-top: 2rem;
 	
 		@media (max-width: $tablet) {
 			margin-top: 0;
