@@ -9,8 +9,8 @@
 .msw-staff-module-list {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
-	grid-column-gap: pxem(50);
-	grid-row-gap: pxem(50);
+	grid-column-gap: 5rem;
+	grid-row-gap: 5rem;
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -68,11 +68,8 @@
 		}
 	}
 	.msw-staff-module-name {
-		// color: $brand-black;
-		// font-size: pxem(28);
 	}
 	.msw-staff-position {
-		// font-size: pxem(17);
 	}
 }
 

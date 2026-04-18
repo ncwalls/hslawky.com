@@ -23,7 +23,7 @@
 }
 
 #ocn {
-	background: #fff;
+	background: $brand-blue-dark;
 	bottom: 0;
 	position: fixed;
 	overflow-y: scroll;
@@ -71,7 +71,7 @@
 
 	&:before,
 	&:after {
-		background: $brand-black;
+		background: #fff;
 		border-radius: 2px;
 		content: '';
 		display: block;
@@ -97,7 +97,7 @@
 			position: relative;
 
 			+ li{
-				border-top: 1px solid $brand-blue;
+				border-top: 1px solid rgba(#fff, 0.1);
 			}
 			
 			.ocn-link-wrap{
@@ -106,9 +106,7 @@
 			}
 
 			a {
-				color: $brand-black;
-				// font-size: pxem(20);
-				// font-weight: 700;
+				color: #fff;
 				line-height: 1;
 				text-transform: uppercase;
 				display: block;
@@ -165,7 +163,7 @@
 							content: '\f107';
 							display: inline-block;
 							font-family: $font-family-icons;
-							font-size: pxem(20);
+							font-size: 2rem;
 							transition: all 0.2s;
 						}
 
@@ -217,20 +215,20 @@
 	background: transparent;
 	border: 0;
 	border-radius: 0;
-	height: pxem(22);
+	height: 22px;
 	line-height: 1;
 	padding: 0;
 	position: relative;
 	right: 0;
-	width: pxem(34);
+	width: 3.4rem;
 
 	&:before,
 	&:after,
 	.middle-bar{
-		background: $brand-black;
+		background: #fff;
 		border-radius: 0.2rem;
 		display: block;
-		height: pxem(4);
+		height: 4px;
 		transition: transform 0.3s;
 		transition-delay: 0;
 	}

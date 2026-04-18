@@ -1,111 +1,340 @@
 .site-footer {
+	background: $brand-blue-dark;
+	color: rgba(#fff, 0.75);
+	font-size: 1.5rem;
+}
+
+
+// ============================================================
+//  FOOTER MAIN — multi-column layout
+// ============================================================
+
+.footer-main {
+	padding: 4.5rem 0 3.5rem;
+	border-bottom: 1px solid rgba(#fff, 0.1);
 
 	.container {
-	}
+		display: grid;
+		grid-template-columns: 1.4fr 1fr 1fr 1fr;
+		gap: 3rem 2.5rem;
+		align-items: start;
 
-}
+		@media (max-width: $laptop) {
+			grid-template-columns: 1fr 1fr;
+			gap: 2.5rem 2rem;
+		}
 
-.site-footer-menu {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.footer-inlinks{
-	.copyright{
-		display: inline-block;
-		margin: 0 0.5rem 0 0;
-	}
-
-	nav{
-		display: inline-block;
-	}
-	
-	ul{
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		
-		li{
-			display: inline-block;
-			
-			+ li{
-				&:before{
-					content: '|';
-					display: inline-block;
-					margin: 0 0.5rem 0 0.2rem;
-				}	
-			}
+		@media (max-width: $phablet) {
+			grid-template-columns: 1fr;
+			gap: 2rem;
 		}
 	}
+}
 
-	@media (max-width: $phablet) {
-		.copyright,
-		nav {
+.footer-col {}
+
+// Brand column
+.footer-col-brand {
+	.footer-logo {
+		margin-bottom: 1.5rem;
+
+		img {
 			display: block;
+			max-width: 11rem;
+			height: auto;
 		}
+	}
 
+	.footer-brand-title {
+		color: #fff;
+		font-family: $font-family-headline;
+		font-weight: $font-weight-headline;
+		font-size: 1.8rem;
+		margin: 0 0 0.75rem;
+	}
+
+	.footer-brand-content {
+		font-size: 1.4rem;
+		line-height: 1.65;
+		color: rgba(#fff, 0.7);
+
+		p { margin: 0 0 0.5rem; }
 	}
 }
 
-.footer-outlinks{
-	display: flex;
-	align-items: center;
+.footer-credentials {
+	margin-top: 1.5rem;
+	padding-top: 1.25rem;
+	border-top: 1px solid rgba(#fff, 0.12);
 }
 
-.footer-social{
-	display: flex;
-	align-items: center;
+.footer-credentials-title {
+	font-size: 1.1rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: $brand-gold;
+	margin: 0 0 0.75rem;
+}
+
+.footer-credentials-list {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-	white-space: nowrap;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem 0.75rem;
 
-	li{
-		display: inline-block;
-		margin-left: pxem(8);
-	}
+	li {
+		font-size: 1.3rem;
+		color: rgba(#fff, 0.6);
 
-	a{
-		background: $brand-grey;
-		border-radius: 50%;
-		color: $brand-black;
-		display: block;
-		font-size: pxem(17);
-		line-height: 1.7em;
-		width: 1.7em;
-		height: 1.7em;
-		text-align: center;
-
-		svg{
-			display: block;
-			width: 50%;
-			height: 100%;
-			margin: auto;
-
-			path{
-				fill: $brand-black;
-			}
+		&::before {
+			content: '·';
+			margin-right: 0.4rem;
+			color: $brand-gold;
 		}
 	}
 }
 
 
-.site-footer__attribution{
-	margin-left: pxem(20);
+// Contact column
+.footer-col-contact {
+	.footer-col-title {
+		color: #fff;
+		margin-bottom: 1rem;
+	}
 
-	.omythic{
+	address {
+		font-style: normal;
+		color: rgba(#fff, 0.7);
+		line-height: 1.6;
+		margin-bottom: 0.9rem;
+	}
+
+	.footer-phone,
+	.footer-email,
+	.footer-hours {
+		margin: 0 0 0.5rem;
+
+		a {
+			color: rgba(#fff, 0.8);
+			text-decoration: none;
+
+			&:hover {
+				color: $brand-gold;
+			}
+		}
+
+		i {
+			color: $brand-gold;
+			width: 1.1em;
+		}
+	}
+
+	.footer-phone-note,
+	.footer-hours-note {
+		font-size: 1.2rem;
+		color: rgba(#fff, 0.5);
+		margin: 0.2rem 0 0.75rem 1.6rem;
+	}
+}
+
+
+// Shared column title
+.footer-col-title {
+	color: #fff;
+	font-family: $font-family-base;
+	font-weight: 700;
+	font-size: 1.3rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	margin: 0 0 1.25rem;
+	padding-bottom: 0.75rem;
+	border-bottom: 1px solid rgba(#fff, 0.15);
+}
+
+
+// Footer link lists
+.footer-links {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+
+	li {
+		margin-bottom: 0.55rem;
+	}
+
+	a {
+		color: rgba(#fff, 0.7);
+		text-decoration: none;
+		font-size: 1.4rem;
+		transition: color 0.2s;
+
+		&:hover {
+			color: $brand-gold;
+		}
+	}
+}
+
+
+// Social icons in contact column
+.footer-social {
+	display: flex;
+	list-style: none;
+	margin: 1.25rem 0 0;
+	padding: 0;
+	gap: 0.6rem;
+	flex-wrap: wrap;
+
+	a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+		background: rgba(#fff, 0.08);
+		color: rgba(#fff, 0.7);
+		font-size: 1.4rem;
+		text-decoration: none;
+		transition: background 0.2s, color 0.2s;
+
+		&:hover {
+			background: $brand-gold;
+			color: #fff;
+		}
+	}
+}
+
+
+// ============================================================
+//  FOOTER NOTICE / DISCLAIMER
+// ============================================================
+
+.footer-notice,
+.footer-licenses {
+	padding: 1.25rem 0;
+	border-top: 1px solid rgba(#fff, 0.08);
+
+	.wysiwyg,
+	p {
+		font-size: 1.2rem;
+		color: rgba(#fff, 0.45);
+		line-height: 1.6;
+		margin: 0;
+
+		p {
+			margin: 0 0 0.4rem;
+		}
+	}
+}
+
+
+// ============================================================
+//  FOOTER BOTTOM BAR
+// ============================================================
+
+.footer-bottom {
+	padding: 1.25rem 0;
+	border-top: 1px solid rgba(#fff, 0.08);
+
+	.container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+
+		@media (max-width: $tablet) {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.75rem;
+		}
+	}
+}
+
+.footer-bottom-left {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.5rem 1rem;
+}
+
+.copyright {
+	font-size: 1.3rem;
+	color: rgba(#fff, 0.5);
+	margin: 0;
+}
+
+#footer-nav {
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 0.75rem;
+
+		li {
+			a {
+				font-size: 1.3rem;
+				color: rgba(#fff, 0.5);
+				text-decoration: none;
+				transition: color 0.2s;
+
+				&:hover {
+					color: $brand-gold;
+				}
+			}
+		}
+	}
+}
+
+.site-footer__attribution {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-left: auto;
+
+	@media (max-width: $tablet) {
+		margin-left: 0;
+	}
+
+	.omythic-skull {
 		display: block;
-		width: pxem(76);
+		width: 1.4rem;
 
-		svg{
+		svg {
 			display: block;
 			width: 100%;
-			height: pxem(13.4);
+			height: auto;
 
-			path{
-				fill: $brand-black;
+			path {
+				fill: rgba(#fff, 0.25);
 			}
+		}
+
+		&:hover svg path {
+			fill: rgba(#fff, 0.5);
+		}
+	}
+
+	.omythic {
+		display: block;
+		width: 4.5rem;
+
+		svg {
+			display: block;
+			width: 100%;
+			height: auto;
+
+			path {
+				fill: rgba(#fff, 0.25);
+			}
+		}
+
+		&:hover svg path {
+			fill: rgba(#fff, 0.5);
 		}
 	}
 }

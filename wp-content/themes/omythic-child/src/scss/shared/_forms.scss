@@ -102,20 +102,48 @@ input[type="button"],
 input[type="submit"],
 .button,
 .wp-block-button__link{
-	border: 0;
-	border-radius: 0;
+	background: $brand-gold;
+	color: $brand-black;
+	border: 1px solid $brand-gold;
+	border-radius: 0.9rem;
 	cursor: pointer;
 	display: inline-block;
-	font-family: $font-family-callout;
-	font-size: pxem(20);
+	font-family: $font-family-base;
+	font-size: 1.9rem;
 	font-style: normal;
-	// font-weight: 700;
+	font-weight: 500;
+	letter-spacing: 0.07em;
 	line-height: normal;
 	padding: 0.5em 1em;
 	text-align: center;
+	text-transform: uppercase;
 	transition: all 0.3s;
 
 	&:hover {
+		background: rgba($brand-gold, 0);
+		color: $brand-gold;
+	}
+
+	&.outline{
+		background: none;
+
+		&.gold{
+			border: 1px solid $brand-gold;
+			color: $brand-gold;
+		}
+		&.black{
+			border: 1px solid $brand-black;
+			color: $brand-black;
+			
+			&:hover {
+				background: $brand-black;
+				color: $brand-gold;
+			}
+		}
+		&.white{
+			border: 1px solid #fff;
+			color: #fff;
+		}
 	}
 }
 

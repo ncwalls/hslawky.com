@@ -2,11 +2,11 @@
 /*----------------------------------------------------------------------
   FONTS
 ----------------------------------------------------------------------*/
-$font-family-base:     sans-serif;
+$font-family-base:     "Jost", sans-serif;;
 $font-weight-base:     400;
-$font-family-headline: $font-family-base;
+$font-family-headline: "Libre Baskerville", serif;;
 $font-weight-headline: 700;
-$font-family-callout:  $font-family-base;
+$font-family-script:  "Caveat", cursive;
 $font-size-base:       18px;
 $font-size-mobile:     $font-size-base;
 $line-height-base:     1.5;
@@ -17,11 +17,19 @@ $font-family-icons:    "Font Awesome 5 Pro";
   BRANDING COLORS
 ----------------------------------------------------------------------*/
 $brand-black: #000;
-$brand-blue: #04c;
-$brand-grey-lt: #d8d8d8;
+$brand-blue: #92B3FF;
+$brand-blue-dark: #23262F;
+$brand-blue-grey: #4D5464;
+$brand-gold: #9B7839;
+$brand-gold-dark: #82632B;
 $brand-grey: #ccc;
-$brand-green: #0c0;
+$brand-grey-light: #E1E1D6;
+$brand-grey-dark: #262626;
+$brand-green: #30AE47;
+$brand-green-light: #95AB95;
+$brand-green-dark: #636C63;
 $brand-red: #c00;
+$brand-yellow: #E0A945;
 
 /* Spacing */
 $header-height: 12rem;

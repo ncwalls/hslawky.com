@@ -5,19 +5,24 @@ h4,
 h5,
 h6 {
 	color: inherit;
-	font-family: $font-family-headline;
+	font-family: $font-family-base;
 	font-weight: $font-weight-headline;
 	line-height: 1.1;
 	margin: 0 0 0.5em 0;
 	word-wrap: break-word;
 }
 h1{
-	font-size: pxem(44);
+	font-family: $font-family-headline;
+	font-size: 4.2rem;
 	line-height: 1;
 }
 h2{
-	font-size: pxem(32);
+	font-family: $font-family-headline;
+	font-size: 2.1rem;
 	line-height: 1;
+}
+h3{
+	font-size: 1.9rem;
 }
 h3{
 }

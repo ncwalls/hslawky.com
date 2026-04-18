@@ -171,6 +171,22 @@
 		});
 	};
 
+	var reviewsSlider = function() {
+		if($('.reviews-slider').length) {
+			$('.reviews-slider').slick({
+				dots: false,
+				arrows: true,
+				prevArrow: '<button class="slick-arrow slick-prev" aria-label="Previous" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="38" viewBox="0 0 21 38" fill="none"><path d="M21 0H12.6116L0 19.0075L12.6116 38H21L8.34504 19.0075L21 0Z" fill="black"/></svg></button>',
+				nextArrow: '<button class="slick-arrow slick-next" aria-label="Next" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="38" viewBox="0 0 21 38" fill="none"><path d="M0 0H8.38843L21 19.0075L8.38843 38H0L12.655 19.0075L0 0Z" fill="black"/></svg></button>',
+				autoplay: true,
+				autoplaySpeed: 6000,
+				pauseOnHover: true,
+				adaptiveHeight: true,
+				speed: 600,
+			});
+		}
+	};
+
 
 	$(document).ready(function(){
 		homeHeroSlider();
@@ -178,6 +194,8 @@
 		scrollAnim();
 		scrollToAnchor();
 		blockGallery();
+		faqs();
+		reviewsSlider();
 	});
 
     window.addEventListener('load', function() {
