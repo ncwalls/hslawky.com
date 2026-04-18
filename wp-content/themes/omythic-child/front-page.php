@@ -177,7 +177,7 @@
 									<?php endif; endforeach; ?>
 								</ul>
 							<?php endif; ?>
-							<span class="card-more">Show More <i class="fas fa-chevron-down"></i></span>
+							<span class="card-more"><span>Show More</span> <i class="fas fa-chevron-down"></i></span>
 						</a>
 					</li>
 				<?php endforeach; ?>

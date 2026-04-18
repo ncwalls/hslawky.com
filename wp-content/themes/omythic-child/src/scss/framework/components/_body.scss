@@ -14,7 +14,7 @@ html {
 	outline: none;
 }
 body {
-	color: $brand-black;
+	color: $brand-grey-med;
 	font-family: $font-family-base;
 	font-size: #{math.div($font-size-base, 10px)}rem;
 	font-size: clamp(1.6rem, #{( math.div(($font-size-base - 10), $design-width)) * 100}vw + 1rem, #{math.div($font-size-base, 10px)}rem);
