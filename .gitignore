@@ -7,6 +7,7 @@
 
 // Also ignore these files and folders
 // that we specify here
+.claude
 _notes
 bower_components
 debug.log
