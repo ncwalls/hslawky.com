@@ -12,6 +12,13 @@
 					<?php the_content(); ?>
 				</div>
 
+				<?php
+					if(get_the_ID() === 9){
+						include('omythic_site_info.php');
+					}
+				?>
+  
+
 			</div>
 
 		</article>
