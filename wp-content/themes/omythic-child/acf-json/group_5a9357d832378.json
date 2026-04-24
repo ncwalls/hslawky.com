@@ -6,6 +6,7 @@
             "key": "field_5a9357d8371fd",
             "label": "Header Image",
             "name": "header_image",
+            "aria-label": "",
             "type": "image",
             "instructions": "",
             "required": 0,
@@ -16,7 +17,6 @@
                 "id": ""
             },
             "return_format": "array",
-            "preview_size": "large",
             "library": "all",
             "min_width": "",
             "min_height": "",
@@ -24,7 +24,9 @@
             "max_width": 3840,
             "max_height": 3840,
             "max_size": 2,
-            "mime_types": "jpg"
+            "mime_types": "jpg,jpeg",
+            "allow_in_bindings": 1,
+            "preview_size": "large"
         }
     ],
     "location": [
@@ -50,5 +52,8 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1699305836
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1777001370
 }
