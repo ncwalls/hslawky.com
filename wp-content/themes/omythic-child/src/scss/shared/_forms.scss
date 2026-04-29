@@ -10,7 +10,7 @@ option {
 
 label {
 	cursor: pointer;
-	font-size: pxem(13);
+	font-size: 1.3rem;
 	font-family: inherit;
 	font-weight: inherit;
 	line-height: 1;
@@ -155,14 +155,14 @@ input[type="submit"],
 .gform_fields {
 	@include clearfix;
 	list-style: none;
-	margin: 0 pxem(-10);
+	margin: 0 -1rem;
 	padding: 0;
 }
 
 .gfield {
 	float: left;
-	margin-bottom: pxem(10);
-	padding: 0 pxem(10);
+	margin-bottom: 1rem;
+	padding: 0 1rem;
 	width: 100%;
 
 	&.gfield_visibility_administrative,

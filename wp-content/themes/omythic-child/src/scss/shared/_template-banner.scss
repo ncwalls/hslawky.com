@@ -1,9 +1,21 @@
 .msw-page-banner {
-	background-position: center top;
+	background-position: center;
 	background-size: cover;
-	height: 20vw;
+	height: 40rem;
+	position: relative;
 
-	@media (max-width: $phablet) {
+	&:before{
+		background: linear-gradient($brand-black, rgba($brand-black,0));
+		content: '';
+		display: block;
+		opacity: 0.7;
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		inset: 0;
+	}
+
+	@media (max-width: $laptop) {
 		height: 40vw;
 	}
 }

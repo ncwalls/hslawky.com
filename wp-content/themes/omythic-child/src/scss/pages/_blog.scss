@@ -15,8 +15,8 @@
 	// -------------------------------------------------------------------------
 
 	.archive-header {
-		margin: 0 auto pxem(20);
-		max-width: pxem(720);
+		margin: 0 auto 2rem;
+		max-width: 72rem;
 		text-align: center;
 
 		h1 {
@@ -35,7 +35,7 @@
 
 		.archive-intro {
 			color: $brand-grey-med;
-			max-width: pxem(620);
+			max-width: 62rem;
 			margin: 0 auto;
 		}
 	}
@@ -49,20 +49,20 @@
 		border-bottom: 1px solid $brand-grey-light;
 		display: flex;
 		justify-content: flex-end;
-		margin: pxem(30) 0 pxem(50);
-		padding-bottom: pxem(20);
+		margin: 3rem 0 5rem;
+		padding-bottom: 2rem;
 
 		.filter-label {
 			color: $brand-grey-med;
 			font-size: 1.4rem;
 			font-weight: 600;
 			letter-spacing: 0.08em;
-			margin: 0 pxem(10) 0 0;
+			margin: 0 1rem 0 0;
 			text-transform: uppercase;
 		}
 
 		.filter-dropdown {
-			max-width: pxem(240);
+			max-width: 24rem;
 
 			.filter-display {
 				border: 1px solid $brand-grey-light;
@@ -114,7 +114,7 @@
 
 	.archive-list {
 		display: grid;
-		gap: pxem(36);
+		gap: 3.6rem;
 		grid-template-columns: 1fr 1fr 1fr;
 
 		@media (max-width: $laptop) {
@@ -190,17 +190,17 @@
 		display: flex;
 		flex: 1;
 		flex-direction: column;
-		padding: pxem(24) pxem(26) pxem(26);
+		padding: 2.4rem 2.6rem 2.6rem;
 	}
 
 	.post-title {
 		color: $brand-grey-dark;
-		font-size: pxem(20);
+		font-size: 2rem;
 		line-height: 1.3;
 		margin-bottom: 0.5em;
 
 		@media (max-width: $laptop) {
-			font-size: pxem(18);
+			font-size: 1.8rem;
 		}
 	}
 
@@ -209,7 +209,7 @@
 		font-size: 1.2rem;
 		letter-spacing: 0.06em;
 		list-style: none;
-		margin: 0 0 pxem(14);
+		margin: 0 0 1.4rem;
 		padding: 0;
 		text-transform: uppercase;
 
@@ -235,7 +235,7 @@
 		flex: 1;
 		font-size: 1.5rem;
 		line-height: 1.65;
-		margin-bottom: pxem(18);
+		margin-bottom: 1.8rem;
 
 		p {
 			margin: 0;
@@ -253,7 +253,7 @@
 	// -------------------------------------------------------------------------
 
 	.archive-pagination {
-		margin-top: pxem(70);
+		margin-top: 7rem;
 		text-align: center;
 
 		.pagination-links {

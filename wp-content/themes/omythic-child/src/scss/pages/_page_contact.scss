@@ -1,57 +1,380 @@
+// =====================================================================
+//  CONTACT PAGE
+// =====================================================================
+
 .page-template-page_contact {
-	
-}
 
-.contact-page-content{
-}
-
-.contact-page-info{
-}
-
-.social-list{
-	list-style: none;
-	margin: 0;
-	padding: 0;
-
-	li{
-		display: inline-block;
-		margin-right: 0.5rem;
+	.contact-page {
+		padding: 0 0 9rem;
 	}
 
-	a{
-		background: $brand-red;
-		border-radius: 50%;
-		color: #fff;
-		display: block;
-		font-size: 2rem;
-		width: 2em;
-		height: 2em;
-		text-align: center;
-		line-height: 2em;
-		transition: background 0.3s;
+	// -------------------------------------------------------------------
+	// Header
+	// -------------------------------------------------------------------
 
-		&:hover{
-			background: #fff;
+	.contact-header {
+		margin: 0 auto 5rem;
+		max-width: 72rem;
+		text-align: center;
+
+		h1 {
+			color: $brand-grey-dark;
+			margin-bottom: 0.4em;
 		}
 
-		svg{
-			display: block;
-			width: 50%;
-			height: 100%;
-			margin: auto;
+		.contact-eyebrow {
+			color: $brand-gold;
+			font-size: 1.3rem;
+			font-weight: 600;
+			letter-spacing: 0.12em;
+			margin-bottom: 0.5em;
+			text-transform: uppercase;
+		}
 
-			path{
-				// fill: $brand-black;
-				// transition: fill 0.3s;
+		.contact-intro {
+			color: $brand-grey-med;
+			max-width: 62rem;
+			margin: 0 auto;
+		}
+	}
+
+	// -------------------------------------------------------------------
+	// Two-column layout
+	// -------------------------------------------------------------------
+
+	.contact-grid {
+		display: grid;
+		gap: 6rem;
+		grid-template-columns: 36rem 1fr;
+
+		@media (max-width: $laptop) {
+			gap: 4rem;
+			grid-template-columns: 30rem 1fr;
+		}
+
+		@media (max-width: $tablet) {
+			grid-template-columns: 1fr;
+			gap: 4rem;
+		}
+	}
+
+	// -------------------------------------------------------------------
+	// Contact info card
+	// -------------------------------------------------------------------
+
+	.contact-info {
+		background: #fff;
+		box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+		padding: 3.4rem 3rem;
+
+		@media (max-width: $tablet) {
+			max-width: 42rem;
+			margin: 0 auto;
+			width: 100%;
+		}
+	}
+
+	.contact-info-block {
+		border-bottom: 1px solid $brand-grey-light;
+		margin-bottom: 2rem;
+		padding-bottom: 2rem;
+
+		&:last-of-type {
+			border-bottom: none;
+			margin-bottom: 0;
+			padding-bottom: 0;
+		}
+	}
+
+	.contact-info-label {
+		color: $brand-grey-dark;
+		display: block;
+		font-size: 1.4rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		margin-bottom: 1rem;
+		text-transform: uppercase;
+	}
+
+	.contact-info-address {
+		color: $brand-grey-dark;
+		font-size: 1.6rem;
+		font-style: normal;
+		line-height: 1.5;
+		margin: 0 0 1rem;
+	}
+
+	.contact-info-directions {
+		align-items: center;
+		color: $brand-gold;
+		display: inline-flex;
+		font-size: 1.4rem;
+		font-weight: 600;
+		gap: 0.6rem;
+		letter-spacing: 0.04em;
+		text-decoration: none;
+		text-transform: uppercase;
+		transition: color 0.2s;
+
+		&:hover {
+			color: $brand-gold-dark;
+		}
+
+		i {
+			font-size: 1.4rem;
+		}
+	}
+
+	.contact-info-link {
+		align-items: center;
+		color: $brand-grey-dark;
+		display: flex;
+		font-size: 1.6rem;
+		gap: 1.4rem;
+		line-height: 1.4;
+		text-decoration: none;
+		transition: color 0.2s;
+		word-break: break-word;
+
+		&:hover {
+			color: $brand-gold;
+
+			.contact-info-icon {
+				background: $brand-gold;
+				color: #fff;
 			}
 		}
 	}
-}
 
-.contact-page-form{
+	.contact-info-hours {
+		align-items: flex-start;
+		cursor: default;
 
-}
+		&:hover {
+			color: $brand-grey-dark;
 
-#gmap {
-	height: 30rem;
+			.contact-info-icon {
+				background: rgba($brand-gold, 0.1);
+				color: $brand-gold;
+			}
+		}
+
+		.contact-info-icon {
+			margin-top: 0.2rem;
+		}
+	}
+
+	.contact-info-icon {
+		align-items: center;
+		background: rgba($brand-gold, 0.1);
+		border-radius: 50%;
+		color: $brand-gold;
+		display: inline-flex;
+		flex: 0 0 auto;
+		font-size: 1.4rem;
+		height: 3.6rem;
+		justify-content: center;
+		transition: background 0.2s, color 0.2s;
+		width: 3.6rem;
+	}
+
+	.contact-info-note {
+		color: $brand-grey-med;
+		font-size: 1.3rem;
+		font-style: italic;
+		margin: 0.8rem 0 0 5rem;
+	}
+
+	.contact-info-social {
+
+		ul {
+			align-items: center;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1rem;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		li {
+			display: inline-flex;
+		}
+
+		a {
+			align-items: center;
+			background: $brand-grey-dark;
+			border-radius: 50%;
+			color: #fff;
+			display: inline-flex;
+			font-size: 1.4rem;
+			height: 3.6rem;
+			justify-content: center;
+			text-decoration: none;
+			transition: background 0.2s, transform 0.2s;
+			width: 3.6rem;
+
+			&:hover {
+				background: $brand-gold;
+				transform: translateY(-2px);
+			}
+		}
+	}
+
+	// -------------------------------------------------------------------
+	// Form column
+	// -------------------------------------------------------------------
+
+	.contact-form {
+		background: #fff;
+		box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+		padding: 3.6rem 4rem 4rem;
+
+		@media (max-width: $tablet) {
+			padding: 3rem 2.4rem;
+		}
+	}
+
+	.contact-form-title {
+		color: $brand-grey-dark;
+		font-size: 2.6rem;
+		margin: 0 0 2.4rem;
+		padding-bottom: 1.6rem;
+		border-bottom: 1px solid $brand-grey-light;
+	}
+
+	// -------------------------------------------------------------------
+	// Gravity Forms (scoped to contact form)
+	// -------------------------------------------------------------------
+
+	.contact-form {
+
+		.gform_fields {
+			margin: 0 -1rem;
+			row-gap: 0.6rem;
+		}
+
+		.gfield {
+			margin-bottom: 1.6rem;
+		}
+
+		.gfield_label {
+			color: $brand-grey-dark;
+			font-family: $font-family-base;
+			font-size: 1.3rem;
+			font-weight: 700;
+			letter-spacing: 0.08em;
+			line-height: 1.2;
+			margin-bottom: 0.8rem;
+			text-transform: uppercase;
+		}
+
+		.gfield_required {
+			color: $brand-gold;
+			margin-left: 0.3rem;
+		}
+
+		input[type="text"],
+		input[type="email"],
+		input[type="tel"],
+		input[type="url"],
+		input[type="number"],
+		input[type="password"],
+		input[type="date"],
+		select,
+		textarea {
+			background: #fff;
+			border: 1px solid $brand-grey-light;
+			border-radius: 0.4rem;
+			color: $brand-grey-dark;
+			font-family: $font-family-base;
+			font-size: 1.6rem;
+			line-height: 1.4;
+			padding: 1.1rem 1.4rem;
+			transition: border-color 0.2s, box-shadow 0.2s;
+			width: 100%;
+
+			&::placeholder {
+				color: rgba($brand-grey-med, 0.6);
+			}
+
+			&:hover {
+				border-color: darken($brand-grey-light, 8%);
+			}
+
+			&:focus {
+				border-color: $brand-gold;
+				box-shadow: 0 0 0 3px rgba($brand-gold, 0.15);
+				outline: none;
+			}
+		}
+
+		textarea {
+			min-height: 14rem;
+			resize: vertical;
+		}
+
+		.ginput_container_select {
+			background: #fff;
+
+			&::before {
+				color: $brand-gold;
+				font-size: 1.8rem;
+				right: 1.4rem;
+			}
+
+			select {
+				padding-right: 3.4rem;
+			}
+		}
+
+		.gfield_description {
+			color: $brand-grey-med;
+			font-size: 1.3rem;
+			margin-top: 0.4rem;
+		}
+
+		.gform_footer {
+			margin: 1rem 0 0;
+			padding: 0;
+
+			input[type="submit"] {
+				font-size: 1.6rem;
+				padding: 1rem 2.4rem;
+				width: auto;
+			}
+		}
+
+		// Validation states
+		.gfield_error {
+
+			.gfield_label {
+				color: $brand-red;
+			}
+
+			input,
+			select,
+			textarea {
+				border-color: $brand-red;
+
+				&:focus {
+					box-shadow: 0 0 0 3px rgba($brand-red, 0.15);
+				}
+			}
+		}
+
+		.gfield_validation_message,
+		.validation_message {
+			color: $brand-red;
+			font-size: 1.3rem;
+			margin-top: 0.4rem;
+		}
+
+		.gform_confirmation_message {
+			background: rgba($brand-green, 0.08);
+			border-left: 3px solid $brand-green;
+			color: $brand-grey-dark;
+			padding: 1.6rem 2rem;
+		}
+	}
 }

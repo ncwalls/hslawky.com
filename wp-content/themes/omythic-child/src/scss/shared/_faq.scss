@@ -18,7 +18,7 @@
 // 			}
 // 			.answer{
 // 				grid-template-rows: 1fr;
-// 				padding: pxem(5) pxem(20) pxem(20) pxem(35);
+// 				padding: 0.5rem 2rem 2rem 3.5rem;
 // 			}
 // 		}
 // 	}
@@ -26,12 +26,12 @@
 // 	.question,
 // 	.answer{
 // 		// color: $brand-black;
-// 		padding: pxem(10) pxem(35);
+// 		padding: 1rem 3.5rem;
 // 		position: relative;
 
 // 		&:before{
 // 			// color: $brand-blue-lt;
-// 			font-size: pxem(23);
+// 			font-size: 2.3rem;
 // 			font-weight: 700;
 // 			line-height: 1;
 // 			position: absolute;
@@ -59,7 +59,7 @@
 // 			font-family: $font-family-icons;
 // 			position: absolute;
 // 			top: 50%;
-// 			right: pxem(8);
+// 			right: 0.8rem;
 // 			transform: translateY(-50%);
 // 		}
 // 	}
@@ -68,7 +68,7 @@
 // 		// background: rgba($brand-blue, 0.06);
 // 		display: grid;
 // 		grid-template-rows: 0fr;
-// 		padding: 0 pxem(20) 0 pxem(35);
+// 		padding: 0 2rem 0 3.5rem;
 // 		overflow: hidden;
 // 		transition: all 0.3s;
 

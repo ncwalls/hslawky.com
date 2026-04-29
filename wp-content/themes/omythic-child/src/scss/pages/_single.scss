@@ -9,7 +9,7 @@
 	}
 
 	.container {
-		max-width: pxem(860);
+		max-width: 86rem;
 	}
 
 	// -------------------------------------------------------------------------
@@ -17,8 +17,8 @@
 	// -------------------------------------------------------------------------
 
 	.article-header {
-		margin-bottom: pxem(36);
-		padding-bottom: pxem(36);
+		margin-bottom: 3.6rem;
+		padding-bottom: 3.6rem;
 		border-bottom: 1px solid $brand-grey-light;
 	}
 
@@ -50,7 +50,7 @@
 
 	.post-meta {
 		color: $brand-gold;
-		font-size: pxem(13);
+		font-size: 1.3rem;
 		letter-spacing: 0.04em;
 		list-style: none;
 		margin: 0;
@@ -76,7 +76,7 @@
 	// -------------------------------------------------------------------------
 
 	.article-body {
-		margin-bottom: pxem(60);
+		margin-bottom: 6rem;
 	}
 
 	// -------------------------------------------------------------------------
@@ -87,13 +87,13 @@
 		background: $brand-gold;
 		color: #fff;
 		margin-top: 2em;
-		padding: pxem(20) pxem(28);
+		padding: 2rem 2.8rem;
 
 		.inner {
 			align-items: center;
 			display: flex;
 			flex-wrap: wrap;
-			gap: pxem(20);
+			gap: 2rem;
 			justify-content: space-between;
 			width: 100%;
 
@@ -114,7 +114,7 @@
 			.addtoany_list {
 				display: flex;
 				align-items: center;
-				gap: pxem(8);
+				gap: 0.8rem;
 
 				a {
 					display: inline-flex;
@@ -161,90 +161,90 @@
 			}
 		}
 	}
+}
+// -------------------------------------------------------------------------
+// Prev / Next navigation
+// -------------------------------------------------------------------------
 
-	// -------------------------------------------------------------------------
-	// Prev / Next navigation
-	// -------------------------------------------------------------------------
+.single-pagination {
+	border-top: 1px solid $brand-grey-light;
+	line-height: 1;
+	margin-top: 5rem;
+	padding-top: 3rem;
+	position: relative;
+	text-transform: uppercase;
+	width: 100%;
 
-	.single-pagination {
-		border-top: 1px solid $brand-grey-light;
-		line-height: 1;
-		margin-top: pxem(50);
-		padding-top: pxem(30);
+	ul {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
+		list-style: none;
+		margin: 0;
+		padding: 0;
 		position: relative;
-		text-transform: uppercase;
+		text-align: center;
+		white-space: nowrap;
 		width: 100%;
+		z-index: 5;
+	}
 
-		ul {
-			align-items: center;
-			display: flex;
-			justify-content: space-between;
-			list-style: none;
-			margin: 0;
-			padding: 0;
-			position: relative;
-			text-align: center;
-			white-space: nowrap;
-			width: 100%;
-			z-index: 5;
-		}
+	.item {
+		align-items: center;
+		display: flex;
+		justify-content: center;
+		width: 30%;
 
-		.item {
-			align-items: center;
-			display: flex;
-			justify-content: center;
-			width: 30%;
+		@media (max-width: $tablet) {
+			width: auto;
 
-			@media (max-width: $tablet) {
-				width: auto;
-
-				.text {
-					display: none;
-				}
-			}
-
-			&.prev {
-				justify-content: flex-start;
-				text-align: left;
-
-				i {
-					margin-right: 0.3em;
-				}
-			}
-
-			&.next {
-				justify-content: flex-end;
-				text-align: right;
-
-				i {
-					margin-left: 0.3em;
-				}
-			}
-
-			&.all {
-				justify-content: center;
-				text-align: center;
+			.text {
+				display: none;
 			}
 		}
 
-		a {
-			align-items: center;
-			color: $brand-grey-dark;
-			display: flex;
-			font-size: pxem(16);
-			font-weight: 700;
-			text-decoration: none;
-			text-transform: uppercase;
-			transition: color 0.2s;
-
-			&:hover {
-				color: $brand-gold;
-			}
+		&.prev {
+			justify-content: flex-start;
+			text-align: left;
 
 			i {
-				display: inline-block;
-				font-size: 2em;
+				margin-right: 0.3em;
 			}
+		}
+
+		&.next {
+			justify-content: flex-end;
+			text-align: right;
+
+			i {
+				margin-left: 0.3em;
+			}
+		}
+
+		&.all {
+			justify-content: center;
+			text-align: center;
+		}
+	}
+
+	a {
+		align-items: center;
+		color: $brand-grey-dark;
+		display: flex;
+		font-size: 1.7rem;
+		font-weight: 700;
+		text-decoration: none;
+		text-transform: uppercase;
+		transition: color 0.2s;
+
+		&:hover {
+			color: $brand-gold;
+		}
+
+		i {
+			display: inline-block;
+			font-size: 1.3em;
 		}
 	}
 }
+
