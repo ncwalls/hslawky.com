@@ -95,6 +95,6 @@
 
 	<div id="MainContent" class="wrapper" role="main">
 
-		<?php if( !is_front_page() ) : ?>
+		<?php if( !is_front_page() && !is_page_template( 'template-practice-area.php' ) ) : ?>
 			<?php get_template_part( 'template', 'banner' ); ?>
 		<?php endif; ?>

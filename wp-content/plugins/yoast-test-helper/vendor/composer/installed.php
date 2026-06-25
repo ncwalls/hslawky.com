@@ -3,7 +3,7 @@
         'name' => 'yoast/test-helper',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '1431e80790025e99a5bb5760deeb51b495475902',
+        'reference' => '6524b39b19499b5f9115e7f3de0f6f4e6566eb20',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'yoast/test-helper' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '1431e80790025e99a5bb5760deeb51b495475902',
+            'reference' => '6524b39b19499b5f9115e7f3de0f6f4e6566eb20',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

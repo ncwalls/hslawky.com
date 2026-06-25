@@ -5,12 +5,13 @@
 			$contact_options = get_field('contact', 'option');
 			$footer_logo     = get_field('footer_logo', 'option');
 
-			$footer_pa = get_posts(array(
-				'post_type'  => 'practice_area',
-				'numberposts'=> -1,
-				'orderby'    => 'menu_order title',
-				'order'      => 'ASC',
-			));
+			$pa_umbrella = get_page_by_path('practice-areas');
+			$footer_pa   = $pa_umbrella ? get_pages(array(
+				'child_of'    => $pa_umbrella->ID,
+				'parent'      => $pa_umbrella->ID,
+				'sort_column' => 'menu_order,post_title',
+				'sort_order'  => 'ASC',
+			)) : array();
 		?>
 
 		<footer class="site-footer" role="contentinfo">
@@ -138,8 +139,8 @@
 					<div class="footer-col footer-col-practice-areas">
 						<h3 class="footer-col-title">Practice Areas</h3>
 						<ul class="footer-links">
-							<?php foreach($footer_pa as $pa_post): ?>
-								<li><a href="<?php echo get_permalink($pa_post->ID); ?>"><?php echo $pa_post->post_title; ?></a></li>
+							<?php foreach($footer_pa as $pa_page): ?>
+								<li><a href="<?php echo get_permalink($pa_page->ID); ?>"><?php echo get_the_title($pa_page->ID); ?></a></li>
 							<?php endforeach; ?>
 						</ul>
 					</div>

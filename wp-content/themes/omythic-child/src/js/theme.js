@@ -188,6 +188,24 @@
 	};
 
 
+	var practiceAreaCardExpand = function(){
+		$('.practice-areas-grid').on('click', '.card-more', function(){
+			var btn = $(this);
+			var card = btn.closest('.practice-area-card');
+			var expanded = card.toggleClass('is-expanded').hasClass('is-expanded');
+			btn.attr('aria-expanded', expanded ? 'true' : 'false');
+		});
+	};
+
+	var practiceAreaFAQ = function(){
+		$('.pa-faq-list').on('click', '.pa-faq-question', function(){
+			var btn = $(this);
+			var item = btn.closest('.pa-faq-item');
+			var open = item.toggleClass('is-open').hasClass('is-open');
+			btn.attr('aria-expanded', open ? 'true' : 'false');
+		});
+	};
+
 	$(document).ready(function(){
 		homeHeroSlider();
 		heroVideo();
@@ -196,6 +214,8 @@
 		blockGallery();
 		faqs();
 		reviewsSlider();
+		practiceAreaCardExpand();
+		practiceAreaFAQ();
 	});
 
     window.addEventListener('load', function() {

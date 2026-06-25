@@ -146,7 +146,6 @@ class GF_System_Report {
 
 		// Display page footer.
 		GF_System_Status::page_footer();
-
 	}
 
 	/**
@@ -785,20 +784,25 @@ class GF_System_Report {
 				}
 
 				if ( isset( $item['action'] ) && ! $is_export ) {
-					$value .= "&nbsp;<a href='#' onclick='gfDoAction(\"{$item['action']['code']}\", \"" . esc_attr( $item['action']['confirm'] ) . "\");'>{$item['action']['label']}</a>";
+					$value .= sprintf(
+						'&nbsp;<a href="#" data-dialog-title="%1$s" data-dialog-confirm="%2$s" data-dialog-callback="gfSystemReportAction" data-action-code="%3$s">%4$s</a>',
+						esc_attr( $item['action']['label'] ),
+						esc_attr( $item['action']['confirm'] ),
+						esc_attr( $item['action']['code'] ),
+						esc_html( $item['action']['label'] )
+					);
 				}
 
 				return $value;
 
 		}
-
 	}
 
 	/**
 	 * Get Gravity Forms Info.
 	 *
 	 * @since  2.2
-	 * @access public
+	 * @since 2.10.1 Added Background Notifications.
 	 *
 	 * @uses GFCommon::get_version_info()
 	 * @uses GFFormsModel::get_upload_root()
@@ -821,10 +825,10 @@ class GF_System_Report {
 
 		$is_writable = wp_is_writable( $upload_path );
 
-		$disable_css      = GFCommon::is_frontend_default_css_disabled();
-		$enable_html5     = get_option( 'rg_gforms_enable_html5', false );
-		$no_conflict_mode = get_option( 'gform_enable_noconflict' );
-		$updates          = get_option( 'gform_enable_background_updates' );
+		$disable_css              = GFCommon::is_frontend_default_css_disabled();
+		$no_conflict_mode         = get_option( 'gform_enable_noconflict' );
+		$updates                  = get_option( 'gform_enable_background_updates' );
+		$background_notifications = (bool) get_option( 'gform_enable_async_notifications' );
 
 		$default_theme = get_option( 'rg_gforms_default_theme');
 		$theme_names   = array(
@@ -836,8 +840,7 @@ class GF_System_Report {
 		$web_api       = GFWebAPI::get_instance();
 		$is_v2_enabled = $web_api->is_v2_enabled( $web_api->get_plugin_settings() );
 
-		// Prepare versions array.
-		$gravityforms = array(
+		return array(
 			array(
 				'label'              => esc_html__( 'Version', 'gravityforms' ),
 				'label_export'       => 'Version',
@@ -886,6 +889,12 @@ class GF_System_Report {
 				'value'        => get_option( 'rg_gforms_currency' ),
 			),
 			array(
+				'label'        => esc_html__( 'Background Notifications', 'gravityforms' ),
+				'label_export' => 'Background Notifications',
+				'value'        => $background_notifications ? __( 'Yes', 'gravityforms' ) : __( 'No', 'gravityforms' ),
+				'value_export' => $background_notifications ? 'Yes' : 'No',
+			),
+			array(
 				'label'        => esc_html__( 'Background updates', 'gravityforms' ),
 				'label_export' => 'Background updates',
 				'value'        => $updates ? __( 'Yes', 'gravityforms' ) : __( 'No', 'gravityforms' ),
@@ -898,14 +907,10 @@ class GF_System_Report {
 				'value_export' => $is_v2_enabled ? 'Yes' : 'No',
 			),
 			array(
-				'label'        => esc_html__( 'Orbital Style Filter', 'gravityforms' ),
-				'value'        => has_filter( 'gform_default_styles' ) ? 'Yes' : 'No',
+				'label' => esc_html__( 'Orbital Style Filter', 'gravityforms' ),
+				'value' => has_filter( 'gform_default_styles' ) ? 'Yes' : 'No',
 			),
 		);
-
-
-		return $gravityforms;
-
 	}
 
 

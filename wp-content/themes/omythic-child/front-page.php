@@ -162,14 +162,19 @@
 			<ul class="practice-areas-grid scroll-animate-item">
 				<?php foreach($pa_section['practice_areas'] as $pa_id): ?>
 					<?php
-						$pa_icon    = get_field('icon', $pa_id);
-						$pa_types   = get_field('key_case_types', $pa_id);
-						$pa_excerpt = get_the_excerpt($pa_id);
-						$pa_link    = get_permalink($pa_id);
-						$pa_title   = get_the_title($pa_id);
+						$pa_icon     = get_field('icon', $pa_id);
+						$pa_excerpt  = get_the_excerpt($pa_id);
+						$pa_title    = get_the_title($pa_id);
+						$pa_children = get_pages(array(
+							'child_of'    => $pa_id,
+							'parent'      => $pa_id,
+							'sort_column' => 'menu_order,post_title',
+							'sort_order'  => 'ASC',
+						));
+						$pa_limit    = 3;
 					?>
 					<li class="practice-area-card">
-						<a href="<?php echo $pa_link; ?>" class="practice-area-card-inner">
+						<div class="practice-area-card-inner">
 							<?php if($pa_icon): ?>
 								<div class="card-icon"><?php echo $pa_icon; ?></div>
 							<?php endif; ?>
@@ -177,15 +182,23 @@
 							<?php if($pa_excerpt): ?>
 								<p class="card-excerpt"><?php echo $pa_excerpt; ?></p>
 							<?php endif; ?>
-							<?php if($pa_types): ?>
+							<?php if($pa_children): ?>
 								<ul class="card-types">
-									<?php foreach($pa_types as $t): if(!empty($t['case_type'])): ?>
-										<li><?php echo esc_html($t['case_type']); ?></li>
-									<?php endif; endforeach; ?>
+									<?php foreach($pa_children as $i => $child): ?>
+										<li class="card-type<?php echo $i >= $pa_limit ? ' is-overflow' : ''; ?>">
+											<a href="<?php echo get_permalink($child->ID); ?>"><?php echo get_the_title($child->ID); ?></a>
+										</li>
+									<?php endforeach; ?>
 								</ul>
 							<?php endif; ?>
-							<span class="card-more"><span>Show More</span> <i class="fas fa-chevron-down"></i></span>
-						</a>
+							<?php if(count($pa_children) > $pa_limit): ?>
+								<button type="button" class="card-more" aria-expanded="false">
+									<span class="card-more-show">Show More</span>
+									<span class="card-more-hide">Show Less</span>
+									<i class="fas fa-chevron-down"></i>
+								</button>
+							<?php endif; ?>
+						</div>
 					</li>
 				<?php endforeach; ?>
 			</ul>

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3086485a83e6c83844cea102b35970c7
+class ComposerStaticInitd482fa64b010736c14e00a6cbce485e5
 {
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
@@ -20,6 +20,11 @@ class ComposerStaticInit3086485a83e6c83844cea102b35970c7
         'Yoast\\WP\\Test_Helper\\Indexing_Reason_Integration' => __DIR__ . '/../..' . '/src/indexing-reason-integration.php',
         'Yoast\\WP\\Test_Helper\\Inline_Script' => __DIR__ . '/../..' . '/src/inline-script.php',
         'Yoast\\WP\\Test_Helper\\Integration' => __DIR__ . '/../..' . '/src/integration-interface.php',
+        'Yoast\\WP\\Test_Helper\\Logger\\Database_Log_Storage' => __DIR__ . '/../..' . '/src/logger/database-log-storage.php',
+        'Yoast\\WP\\Test_Helper\\Logger\\Log_Storage' => __DIR__ . '/../..' . '/src/logger/log-storage-interface.php',
+        'Yoast\\WP\\Test_Helper\\Logger\\Test_Helper_Logger' => __DIR__ . '/../..' . '/src/logger/test-helper-logger.php',
+        'Yoast\\WP\\Test_Helper\\Logger_Integration' => __DIR__ . '/../..' . '/src/logger-integration.php',
+        'Yoast\\WP\\Test_Helper\\MyYoast_OAuth_Overrides' => __DIR__ . '/../..' . '/src/myyoast-oauth-overrides.php',
         'Yoast\\WP\\Test_Helper\\Notification' => __DIR__ . '/../..' . '/src/notification.php',
         'Yoast\\WP\\Test_Helper\\Option' => __DIR__ . '/../..' . '/src/option.php',
         'Yoast\\WP\\Test_Helper\\Plugin' => __DIR__ . '/../..' . '/src/plugin.php',
@@ -47,7 +52,7 @@ class ComposerStaticInit3086485a83e6c83844cea102b35970c7
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->classMap = ComposerStaticInit3086485a83e6c83844cea102b35970c7::$classMap;
+            $loader->classMap = ComposerStaticInitd482fa64b010736c14e00a6cbce485e5::$classMap;
 
         }, null, ClassLoader::class);
     }

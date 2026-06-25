@@ -571,7 +571,7 @@
                         "id": ""
                     },
                     "post_type": [
-                        "practice_area"
+                        "page"
                     ],
                     "post_status": [
                         "publish"
@@ -1728,5 +1728,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1776463453
+    "modified": 1782344298
 }

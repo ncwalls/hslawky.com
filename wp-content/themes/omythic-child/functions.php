@@ -136,6 +136,13 @@ class MakespaceChild {
 		if ( get_field( 'default_google_map_api_key', 'option' ) ) :
 			acf_update_setting('google_api_key', get_field( 'default_google_map_api_key', 'option' ));
 		endif;
+
+		acf_add_options_sub_page( array(
+			'page_title'  => 'Practice Area Defaults',
+			'menu_title'  => 'Practice Area Defaults',
+			'menu_slug'   => 'practice-area-defaults',
+			'parent_slug' => 'edit.php?post_type=page',
+		) );
 	}
 
 	function msw_loaded() {
@@ -393,31 +400,6 @@ class MakespaceChild {
 		});
 
 
-		register_post_type( 'practice_area', array(
-			'label' => 'Practice Areas',
-			'labels' => array(
-				'name' => 'Practice Areas',
-				'singular_name' => 'Practice Area',
-			),
-			'has_archive' => 'practice-areas',
-			'hierarchical' => true,
-			'public' => true,
-			'supports' => array( 'title', 'editor', 'excerpt', 'revisions', 'page-attributes' ),
-			'menu_icon' => 'dashicons-bank',
-			'show_in_rest' => true,
-			'rewrite' => array(
-				'slug' =>  'practice-areas'
-			)
-		) );
-		
-		add_action('acf/init', function() {
-			acf_add_options_sub_page( array(
-				'page_title' => 'Practice Areas Settings',
-				'menu_title' => 'Practice Areas Settings',
-				'menu_slug' => 'practice_area-archive-settings',
-				'parent_slug' => 'edit.php?post_type=practice_area'
-			) );
-		});
 	}
 
 	function pre_get_posts( $query ){

@@ -1,0 +1,1499 @@
+// ============================================================
+//  PRACTICE AREA SUB-PAGE TEMPLATE
+//  Used by: template-practice-area.php
+//  Design width: 1400px
+// ============================================================
+
+$pa-cream:      #f1ece1;
+$pa-cream-dark: #e6e0d0;
+
+// position:sticky needs an ancestor scroll container that scrolls with the viewport.
+// .wrapper has overflow:hidden (framework default), which makes sticky elements
+// stick to a non-scrolling container — i.e. do nothing. Reset it on this template.
+.page-template-template-practice-area {
+	.wrapper { overflow: visible; }
+
+	.site-footer{
+		margin-top: 0;
+	}
+}
+
+.practice-area {
+
+	.pa-section {
+		padding: 9rem 0;
+
+		@media (max-width: $tablet) {
+			padding: 5rem 0;
+		}
+	}
+
+	// --- Shared eyebrow ---
+	.pa-eyebrow {
+		font-family: $font-family-base;
+		font-size: 1.25rem;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: $brand-grey-med;
+		margin: 0 0 1.5rem;
+	}
+	.pa-eyebrow-on-gold { color: rgba(#000, 0.7); }
+
+	.pa-section-title {
+		font-family: $font-family-headline;
+		font-weight: $font-weight-headline;
+		font-size: 4.2rem;
+		line-height: 1.15;
+		color: $brand-grey-dark;
+		margin: 0 0 2rem;
+
+		em { font-style: italic; font-weight: 400; display: block; }
+
+		@media (max-width: $tablet) { font-size: 3rem; }
+	}
+
+	.pa-section-intro {
+		font-size: 1.7rem;
+		line-height: 1.7;
+		color: $brand-grey-med;
+		max-width: 80rem;
+		margin: 0 0 4rem;
+	}
+
+
+	// ============================================================
+	//  HERO  (Figma node 2134:22, 1440x800)
+	// ============================================================
+	.pa-hero {
+		position: relative;
+		background: #000 center / cover no-repeat;
+		color: #fff;
+		overflow: hidden;
+		min-height: 80rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+
+		&::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: rgba(0, 0, 0, 0.72);
+			z-index: 1;
+		}
+
+		.container { position: relative; z-index: 2; }
+
+		.pa-hero-inner {
+			padding-top: 17.3rem; // y=173 in 800px hero
+			padding-bottom: 4rem;
+			max-width: 75rem;
+		}
+
+		.pa-hero-credentials-wrap {
+			position: relative;
+			z-index: 2;
+			padding-bottom: 7rem;
+		}
+
+		// y=173 — eyebrow
+		.pa-hero-eyebrow {
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.4rem;
+			letter-spacing: 0.2rem;
+			text-transform: uppercase;
+			color: #fff;
+			margin: 0 0 1.5rem;
+		}
+
+		// y=212, h=151 — tagline
+		.pa-hero-tagline {
+			font-family: $font-family-headline;
+			font-weight: $font-weight-headline;
+			font-size: 4.2rem;
+			line-height: 5rem;
+			letter-spacing: -0.042rem;
+			color: $brand-gold;
+			margin: 0 0 3rem;
+			max-width: 58rem;
+
+			em {
+				font-style: normal;
+				font-weight: $font-weight-headline;
+				display: block;
+			}
+
+			@media (max-width: $tablet) { font-size: 3.2rem; line-height: 1.2; }
+		}
+
+		// y=390 — intro
+		.pa-hero-intro {
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 2.3rem;
+			line-height: 1.3;
+			color: #fff;
+			margin: 0 0 3rem;
+			max-width: 68rem;
+
+			p { margin: 0 0 1rem; &:last-child { margin-bottom: 0; } }
+		}
+
+		// y=523 — buttons row
+		.pa-hero-actions {
+			display: flex;
+			align-items: center;
+			gap: 1.6rem;
+			flex-wrap: wrap;
+			margin-bottom: 2rem;
+		}
+
+		.pa-hero-button-primary {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 38.3rem;
+			height: 4.5rem;
+			background: $brand-gold;
+			border-radius: 0.9rem;
+			color: #000;
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.9rem;
+			letter-spacing: 0.133rem;
+			text-transform: uppercase;
+			text-decoration: none;
+			transition: background 0.2s;
+
+			&:hover { background: $brand-gold-dark; color: #000; }
+		}
+
+		.pa-hero-or {
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.4rem;
+			color: #848484;
+			text-transform: uppercase;
+			letter-spacing: 0;
+		}
+
+		.pa-hero-button-phone {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 21.5rem;
+			height: 4.5rem;
+			background: transparent;
+			border: 2px solid $brand-gold;
+			border-radius: 0.9rem;
+			color: $brand-gold;
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.9rem;
+			letter-spacing: 0.133rem;
+			text-transform: uppercase;
+			text-decoration: none;
+			transition: background 0.2s, color 0.2s;
+
+			&:hover { background: $brand-gold; color: #000; }
+		}
+
+		// y=601 — trust badges italic
+		.pa-hero-trust {
+			font-family: $font-family-base;
+			font-style: italic;
+			font-weight: 400;
+			font-size: 1.8rem;
+			letter-spacing: 0.04rem;
+			color: #ccc;
+			margin: 0 0 4rem;
+		}
+
+		// y=684 — credentials row (4 columns, 3 stacked lines each, no icons)
+		.pa-hero-credentials {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 3rem;
+
+			@media (max-width: $tablet) {
+				grid-template-columns: repeat(2, 1fr);
+				gap: 2rem;
+			}
+
+			li {
+				display: flex;
+				flex-direction: column;
+				gap: 0.3rem;
+				line-height: 1.4;
+				letter-spacing: 0.052rem;
+			}
+
+			.pa-hero-cred-value {
+				font-family: $font-family-base;
+				font-weight: 700;
+				font-size: 1.3rem;
+				color: $brand-gold;
+				text-transform: uppercase;
+			}
+
+			.pa-hero-cred-label {
+				font-family: $font-family-base;
+				font-weight: 700;
+				font-size: 1.3rem;
+				color: #fff;
+				text-transform: uppercase;
+			}
+
+			.pa-hero-cred-sublabel {
+				font-family: $font-family-base;
+				font-weight: 400;
+				font-size: 1.3rem;
+				color: #fff;
+				text-transform: none;
+				letter-spacing: 0;
+			}
+		}
+
+		// y=737 — floating phone CTA in bottom-right corner
+		.pa-hero-phone-corner {
+			position: absolute;
+			right: 2rem;
+			bottom: 2.5rem;
+			width: 3.7rem;
+			height: 3.8rem;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			color: $brand-gold;
+			text-decoration: none;
+			z-index: 3;
+			transition: transform 0.2s, color 0.2s;
+
+			i { font-size: 3.2rem; line-height: 1; }
+
+			&:hover {
+				color: lighten($brand-gold, 8%);
+				transform: scale(1.06);
+			}
+		}
+	}
+
+	// ============================================================
+	//  BREADCRUMBS
+	// ============================================================
+	.pa-breadcrumbs {
+		background: $brand-grey-dark;
+		padding: 1.4rem 0;
+		font-size: 1.2rem;
+		color: rgba(#fff, 0.7);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+
+		a {
+			color: rgba(#fff, 0.7);
+			text-decoration: none;
+
+			&:hover { color: $brand-gold; }
+		}
+
+		.breadcrumb_last { color: $brand-gold; }
+	}
+
+	// ============================================================
+	//  BODY INTRO "Up Against"  (Figma node 2134:36, 1440x1201)
+	// ============================================================
+	.pa-intro {
+		background: linear-gradient(152.22deg, rgb(243, 243, 241) 66.61%, rgb(189, 188, 179) 100%);
+		padding: 9.9rem 0 7rem; // y=865-802=63 to start; bottom space for testimonial
+		// overflow: visible;
+		
+		// Grid: image (829px) on left, sidebar (358px) on right
+		.pa-intro-grid {
+			display: grid;
+			grid-template-columns: 1fr 36rem;
+			column-gap: 4.5rem;
+			align-items: stretch;
+			position: relative;
+
+			@media (max-width: $desktop) {
+				grid-template-columns: 1fr 33rem;
+			}
+			@media (max-width: $laptop) { grid-template-columns: 1fr; }
+		}
+
+		.pa-intro-head {
+			margin-bottom: 5rem;
+		}
+
+		.pa-intro-side{
+			position: relative;
+			z-index: 3;
+		}
+
+		// y=865 — eyebrow
+		.pa-intro-eyebrow {
+			font-family: $font-family-base;
+			font-weight: 600;
+			font-size: 1.6rem;
+			letter-spacing: 0.04rem;
+			color: #848484;
+			text-transform: uppercase;
+			margin: 0 0 2rem;
+		}
+
+		// y=901, h=137, lh=45px — heading
+		.pa-intro-title {
+			font-family: $font-family-headline;
+			font-weight: $font-weight-headline;
+			font-size: 4.2rem;
+			line-height: 4.5rem;
+			letter-spacing: -0.04rem;
+			color: $brand-gold;
+			margin: 0 0 4rem;
+			// max-width: 83rem;
+
+			em {
+				font-style: normal;
+				font-weight: $font-weight-headline;
+				display: block;
+			}
+
+			@media (max-width: $tablet) { font-size: 3rem; line-height: 1.15; }
+		}
+
+		// y=1052 — content
+		.pa-intro-content {
+			font-family: $font-family-base;
+			font-weight: 400;
+			font-size: 1.8rem;
+			line-height: 1.4;
+			letter-spacing: -0.04rem;
+			color: $brand-grey-med;
+			// max-width: 83rem;
+
+			p { margin: 0 0 1.5rem; &:last-child { margin-bottom: 0; } }
+		}
+
+
+		.pa-intro-main { min-width: 0; }
+
+		// y=1153, 829x600 — image
+		.pa-intro-image {
+			margin: 0;
+
+			img {
+				display: block;
+				width: 100%;
+				height: 60rem;
+				object-fit: cover;
+
+				@media (max-width: $tablet) { height: auto; }
+			}
+		}
+
+		// y=1794, 829x144 — testimonial bar (green gradient)
+		.pa-intro-testimonial {
+			margin: 4rem 0 0 0;
+			padding: 4rem 4.5rem;
+			background: linear-gradient(71.9deg, rgb(99, 108, 99) 7.25%, rgb(149, 171, 149) 62.9%);
+			text-align: center;
+			color: $brand-grey-dark;
+			min-height: 14.4rem;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			gap: 0.8rem;
+		}
+
+		.pa-intro-testimonial-quote {
+			font-family: $font-family-base;
+			font-weight: 600;
+			font-size: 2.1rem;
+			line-height: 2.4rem;
+			letter-spacing: -0.04rem;
+			color: $brand-grey-dark;
+			margin: 0;
+		}
+
+		.pa-intro-testimonial-cite {
+			font-family: $font-family-base;
+			font-style: normal;
+			font-weight: 600;
+			font-size: 1.6rem;
+			line-height: 2.3rem;
+			color: $brand-grey-dark;
+		}
+
+		// y=906, 358x630 — sidebar card (gold-tint translucent)
+		.pa-intro-points {
+			background: rgba(155, 120, 57, 0.13);
+			box-shadow: 0 9px 23px 0 rgba(0, 0, 0, 0.19);
+			border-radius: 0; // design has no radius
+			color: $brand-grey-med;
+			padding: 2.5rem 2.2rem;
+			border: 0;
+			align-self: start;
+			position: sticky;
+			top: 0;
+		}
+
+		// y=931 — sidebar heading
+		.pa-intro-points-title {
+			font-family: $font-family-headline;
+			font-weight: $font-weight-headline;
+			font-size: 1.9rem;
+			line-height: 2.4rem;
+			// letter-spacing: -0.019rem;
+			color: $brand-gold;
+			text-transform: none;
+			margin: 0 0 2.8rem;
+			padding-bottom: 0;
+			border-bottom: 0;
+		}
+
+		// Items (4)
+		.pa-intro-points-list {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			li {
+				display: grid;
+				grid-template-columns: 2.5rem 1fr;
+				gap: 0.5rem;
+				padding: 0;
+				margin: 0 0 2.5rem;
+				border: 0;
+				background: transparent;
+
+				&:last-child { margin-bottom: 0; }
+			}
+
+			.pa-intro-points-number {
+				font-family: $font-family-base;
+				font-weight: 300;
+				font-size: 1.6rem;
+				line-height: 1.1;
+				color: $brand-grey-med;
+				text-transform: uppercase;
+			}
+
+			.pa-intro-points-body { display: flex; flex-direction: column; gap: 0.6rem; }
+
+			.pa-intro-points-item-title {
+				display: block;
+				font-family: $font-family-base;
+				font-weight: 600;
+				font-size: 1.6rem;
+				line-height: 1.1;
+				color: $brand-grey-med;
+				text-transform: uppercase;
+				letter-spacing: 0;
+				margin: 0;
+			}
+
+			p {
+				font-family: $font-family-base;
+				font-weight: 400;
+				font-size: 1.6rem;
+				line-height: 1.2;
+				color: $brand-grey-med;
+				margin: 0;
+			}
+		}
+	}
+
+	// ============================================================
+	//  WHAT CLIENTS SAY  (Figma node 2134:1560, 1440x480)
+	// ============================================================
+	.pa-clients-say {
+		background: $brand-gold;
+		color: #262626;
+		min-height: 48rem;
+		padding: 6.3rem 0 7rem; // y=2066-2003=63 to start; balanced bottom
+		display: flex;
+		align-items: flex-start;
+
+		.pa-clients-say-grid {
+			display: grid;
+			grid-template-columns: 1fr 26rem;
+			column-gap: 6rem;
+			align-items: end;
+			width: 100%;
+
+			@media (max-width: $laptop) { grid-template-columns: 1fr; }
+		}
+
+		.pa-clients-say-main { min-width: 0; }
+
+		// y=2066 — eyebrow
+		.pa-eyebrow {
+			font-family: $font-family-base;
+			font-weight: 600;
+			font-size: 1.6rem;
+			letter-spacing: 0.04rem;
+			line-height: 1.2;
+			color: #262626;
+			text-transform: uppercase;
+			margin: 0 0 1.5rem;
+		}
+
+		// y=2102 — heading; line 2 is italic Libre Baskerville
+		.pa-clients-say-title {
+			font-family: $font-family-headline;
+			font-weight: $font-weight-headline;
+			font-size: 4.2rem;
+			line-height: 4.5rem;
+			letter-spacing: -0.04rem;
+			color: #262626;
+			margin: 0 0 4rem;
+
+			em {
+				font-style: italic;
+				font-weight: $font-weight-headline;
+				display: block;
+			}
+
+			@media (max-width: $tablet) { font-size: 3rem; line-height: 1.15; }
+		}
+
+		// y=2225, 134x41 — star pill
+		.pa-clients-say-stars {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.2rem;
+			width: 13.4rem;
+			height: 4.1rem;
+			background: #82632b;
+			border-radius: 3.2rem;
+			color: #262626;
+			font-size: 1.7rem;
+			letter-spacing: 0.2rem;
+			margin-bottom: 2.1rem;
+
+			i { font-size: 1.7rem; }
+		}
+
+		// y=2287, 871px wide — quote
+		.pa-clients-say-quote {
+			margin: 0 0 1rem;
+			max-width: 87.1rem;
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.8rem;
+			line-height: 2.4rem;
+			letter-spacing: -0.04rem;
+			color: #262626;
+
+			p { margin: 0; }
+		}
+
+		// y=2374 — author (mixed weights)
+		.pa-clients-say-author {
+			margin: 0;
+			color: #262626;
+			line-height: 2.3rem;
+		}
+
+		.pa-clients-say-author-name {
+			font-family: $font-family-base;
+			font-weight: 700;
+			font-size: 1.8rem;
+		}
+
+		.pa-clients-say-author-sep {
+			font-family: $font-family-base;
+			font-weight: 300;
+			font-size: 1.8rem;
+		}
+
+		.pa-clients-say-author-city {
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.6rem;
+		}
+
+		// y=2397 — case type
+		.pa-clients-say-case-type {
+			margin: 0;
+			font-family: $font-family-base;
+			font-weight: 400;
+			font-size: 1.6rem;
+			line-height: 2.3rem;
+			color: #262626;
+		}
+
+		// 259x92.8 stat boxes — square, bordered, translucent dark
+		.pa-clients-say-stats {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 1.6rem;
+
+			li {
+				width: 26rem;
+				// height: 9.3rem;
+				background: rgba(38, 38, 38, 0.13);
+				border: 1px solid #262626;
+				border-radius: 0;
+				padding: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 0.4rem;
+				padding: 1.5rem 1rem;
+				text-align: center;
+			}
+
+			.value {
+				font-family: $font-family-base;
+				font-weight: 600;
+				font-size: 3.2rem;
+				line-height: 1.2;
+				letter-spacing: 0.04rem;
+				text-transform: uppercase;
+				color: #262626;
+				margin: 0;
+
+				&.is-strike { text-decoration: line-through; }
+			}
+
+			.label {
+				font-family: $font-family-base;
+				font-weight: 600;
+				font-size: 1.6rem;
+				line-height: 1.2;
+				letter-spacing: 0.04rem;
+				text-transform: uppercase;
+				color: #262626;
+				margin: 0;
+			}
+		}
+
+		@media (max-width: $laptop) {
+			.pa-clients-say-stats {
+				margin-top: 2rem;
+				flex-direction: row;
+				flex-wrap: wrap;
+			}
+		}
+	}
+
+	// ============================================================
+	//  WHAT HAPPENS WHEN YOU CALL  (Figma node 2134:62, 1440x543, bg #23262f)
+	// ============================================================
+	.pa-what-happens {
+		background: #23262f;
+		color: #fff;
+		text-align: center;
+
+		// y=2566 — Libre Baskerville Bold 42px lh 50px gold, NOT italic, tracking -0.42px
+		.pa-what-happens-title {
+			font-family: $font-family-headline;
+			font-weight: $font-weight-headline;
+			font-style: normal;
+			font-size: 4.2rem;
+			line-height: 5rem;
+			letter-spacing: -0.042rem;
+			color: $brand-gold;
+			margin: 0 0 2rem;
+
+			@media (max-width: $tablet) { font-size: 3rem; line-height: 1.2; }
+		}
+
+		// y=2637 — Jost Regular 18px lh 1.4 white
+		.pa-what-happens-intro {
+			font-family: $font-family-base;
+			font-weight: 400;
+			font-size: 1.8rem;
+			line-height: 1.4;
+			color: #fff;
+			// max-width: 100rem;
+			margin: 0 auto 5rem;
+		}
+
+		.pa-steps {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 4rem;
+			text-align: left;
+
+			@media (max-width: $tablet) { grid-template-columns: 1fr; gap: 3rem; }
+		}
+
+		.pa-step { padding: 0; }
+
+		// 69px cream circle with gold number, Jost Black 32px
+		.pa-step-number {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 6.9rem;
+			height: 6.9rem;
+			border-radius: 50%;
+			background: rgba(155, 120, 57, 0.13);
+			color: $brand-gold;
+			font-family: $font-family-base;
+			font-weight: 900;
+			font-size: 3.2rem;
+			line-height: 1;
+			margin-bottom: 2rem;
+		}
+
+		// Libre Baskerville Bold 21px white
+		.pa-step-title {
+			font-family: $font-family-headline;
+			font-weight: $font-weight-headline;
+			font-size: 2.1rem;
+			color: #fff;
+			margin: 0 0 1.5rem;
+			line-height: 1.2;
+			max-width: 34rem;
+		}
+
+		// Jost Regular 16px lh 23px rgba(255,255,255,0.7)
+		.pa-step-content {
+			font-family: $font-family-base;
+			font-weight: 400;
+			font-size: 1.6rem;
+			line-height: 2.3rem;
+			color: rgba(#fff, 0.7);
+			margin: 0;
+			max-width: 34rem;
+		}
+	}
+
+	// ============================================================
+	//  START HERE — CASE REVIEW CTA  (Figma node 2141:1802, 1440x456, bg #e8e3d9)
+	// ============================================================
+	.pa-case-review {
+		background: #e8e3d9;
+		min-height: 45.6rem;
+		padding: 6.3rem 0; // y=3089-3026=63
+
+		.pa-case-review-inner {
+			display: grid;
+			grid-template-columns: 1fr 26rem;
+			column-gap: 6rem;
+			align-items: center;
+
+			@media (max-width: $laptop) { grid-template-columns: 1fr; }
+		}
+
+		.pa-case-review-text { min-width: 0; }
+
+		// y=3089 — eyebrow
+		.pa-eyebrow {
+			font-family: $font-family-base;
+			font-weight: 600;
+			font-size: 1.6rem;
+			letter-spacing: 0.04rem;
+			line-height: 1.2;
+			color: #848484;
+			text-transform: uppercase;
+			margin: 0 0 1.5rem;
+		}
+
+		// y=3125 — heading; line 1 NOT italic, line 2 italic Libre Baskerville Italic
+		.pa-case-review-title {
+			font-family: $font-family-headline;
+			font-weight: $font-weight-headline;
+			font-style: normal;
+			font-size: 4.2rem;
+			line-height: 4.5rem;
+			letter-spacing: -0.04rem;
+			color: #262626;
+			margin: 0 0 2rem;
+			max-width: 83rem;
+
+			em {
+				font-style: italic;
+				font-weight: $font-weight-headline;
+				display: block;
+			}
+
+			@media (max-width: $tablet) { font-size: 3rem; line-height: 1.15; }
+		}
+
+		// y=3233 — subtitle
+		.pa-case-review-subtitle {
+			font-family: $font-family-base;
+			font-weight: 400;
+			font-size: 1.8rem;
+			line-height: 2.4rem;
+			letter-spacing: -0.04rem;
+			color: #262626;
+			max-width: 87rem;
+			margin: 0 0 3rem;
+		}
+
+		// y=3314 — buttons row
+		.pa-case-review-actions {
+			display: flex;
+			align-items: center;
+			gap: 1.6rem;
+			flex-wrap: wrap;
+			margin-bottom: 2.5rem;
+		}
+
+		// 383x45 gold filled
+		.pa-case-review-button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 38.3rem;
+			height: 4.5rem;
+			background: $brand-gold;
+			border: 0;
+			border-radius: 0.9rem;
+			color: #000;
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.9rem;
+			letter-spacing: 0.133rem;
+			text-transform: uppercase;
+			text-decoration: none;
+			transition: background 0.2s;
+
+			&:hover { background: $brand-gold-dark; color: #000; }
+		}
+
+		// y=3326 — "OR CALL"
+		.pa-case-review-or {
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.4rem;
+			line-height: 1.2;
+			color: #848484;
+			text-transform: uppercase;
+			letter-spacing: 0;
+		}
+
+		// 215x45 outlined
+		.pa-case-review-phone {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 21.5rem;
+			height: 4.5rem;
+			background: transparent;
+			border: 2px solid $brand-gold;
+			border-radius: 0.9rem;
+			color: $brand-gold;
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.9rem;
+			letter-spacing: 0.133rem;
+			text-transform: uppercase;
+			text-decoration: none;
+			transition: background 0.2s, color 0.2s;
+
+			&:hover { background: $brand-gold; color: #000; }
+		}
+
+		// y=3382 — italic trust badges (single line, dot-separated)
+		.pa-case-review-trust {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0;
+			font-family: $font-family-base;
+			font-style: italic;
+			font-weight: 400;
+			font-size: 1.8rem;
+			line-height: 1.2;
+			letter-spacing: 0.04rem;
+			color: #262626;
+
+			li { display: inline; }
+
+			li + li::before {
+				content: '·';
+				margin: 0 1.4rem;
+				color: #262626;
+				font-style: normal;
+				display: inline-block;
+			}
+		}
+
+		// y=3158 — stats stacked on right (transparent bg, border only, square)
+		.pa-case-review-stats {
+			list-style: none;
+			margin: 0; // y=3158-3026=132 from section top
+			padding: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 1.5rem;
+
+			li {
+				width: 25.9rem;
+				height: 9.28rem;
+				background: transparent;
+				border: 1px solid #262626;
+				border-radius: 0;
+				padding: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 0.4rem;
+				text-align: center;
+			}
+
+			.value {
+				font-family: $font-family-base;
+				font-weight: 600;
+				font-size: 3.2rem;
+				line-height: 1.2;
+				letter-spacing: 0.04rem;
+				text-transform: uppercase;
+				color: #262626;
+				margin: 0;
+			}
+
+			.label {
+				font-family: $font-family-base;
+				font-weight: 600;
+				font-size: 1.6rem;
+				line-height: 1.2;
+				letter-spacing: 0.04rem;
+				text-transform: uppercase;
+				color: #262626;
+				margin: 0;
+			}
+		}
+
+		@media (max-width: $laptop) {
+			.pa-case-review-stats {
+				margin-top: 2rem;
+				flex-direction: row;
+				flex-wrap: wrap;
+			}
+		}
+	}
+
+	// ============================================================
+	//  KNOW YOUR RIGHTS + FAQs  (Figma node 2141:1852, 1440x1546, bg #fff)
+	// ============================================================
+	.pa-rights {
+		background: #fff;
+		padding: 6.3rem 0 9rem; // y=3545-3482=63 to start
+
+		.pa-rights-grid {
+			display: grid;
+			grid-template-columns: 1fr 35.8rem;
+			column-gap: 4.5rem;
+			align-items: start;
+
+			@media (max-width: $laptop) { grid-template-columns: 1fr; }
+		}
+
+		.pa-rights-main { grid-column: 1; grid-row: 1; }
+		.pa-rights-sidebar { grid-column: 2; grid-row: 1; }
+		.pa-faq { grid-column: 1 / -1; grid-row: 2; margin-top: 6rem; }
+
+		@media (max-width: $laptop) {
+			.pa-rights-main,
+			.pa-rights-sidebar,
+			.pa-faq { grid-column: 1; grid-row: auto; }
+		}
+
+		// y=3545 — eyebrow
+		.pa-eyebrow {
+			font-family: $font-family-base;
+			font-weight: 600;
+			font-size: 1.6rem;
+			line-height: 1.2;
+			letter-spacing: 0.04rem;
+			color: #848484;
+			text-transform: uppercase;
+			margin: 0 0 2rem;
+		}
+
+		// y=3578 — heading; line 1 NOT italic, line 2 italic
+		.pa-rights-title {
+			font-family: $font-family-headline;
+			font-weight: $font-weight-headline;
+			font-style: normal;
+			font-size: 4.2rem;
+			line-height: 5rem;
+			letter-spacing: -0.042rem;
+			color: #262626;
+			margin: 0 0 5.5rem;
+			max-width: 99.6rem;
+
+			em {
+				font-style: italic;
+				font-weight: $font-weight-headline;
+				display: block;
+			}
+
+			@media (max-width: $tablet) { font-size: 3rem; line-height: 1.15; }
+		}
+
+		.pa-rights-intro {
+			font-family: $font-family-base;
+			font-weight: 400;
+			font-size: 1.8rem;
+			line-height: 1.4;
+			color: #262626;
+			margin-bottom: 4rem;
+			max-width: 82.8rem;
+
+			p { margin: 0 0 1.5rem; }
+		}
+
+		.pa-rights-facts {
+			display: flex;
+			flex-direction: column;
+			gap: 4rem;
+		}
+
+		// Fact title — Jost SemiBold 24px (NOT serif)
+		.pa-rights-fact-title {
+			font-family: $font-family-base;
+			font-weight: 600;
+			font-size: 2.4rem;
+			line-height: 1.2;
+			color: #262626;
+			margin: 0 0 1.2rem;
+			max-width: 85rem;
+		}
+
+		// Fact body — Jost Regular 18px lh 1.4
+		.pa-rights-fact-content {
+			font-family: $font-family-base;
+			font-weight: 400;
+			font-size: 1.8rem;
+			line-height: 1.4;
+			color: #262626;
+			max-width: 83rem;
+
+			p { margin: 0 0 1.2rem; &:last-child { margin-bottom: 0; } }
+		}
+
+		.pa-rights-sidebar {
+			display: flex;
+			flex-direction: column;
+			gap: 1.4rem;
+		}
+
+		// Dark sidebar cards — bg #23262f, NO border-radius, shadow
+		.pa-rights-card {
+			background: #23262f;
+			color: #fff;
+			padding: 2.4rem 2.5rem 2.8rem;
+			border-radius: 0;
+			box-shadow: 0 9px 23px 0 rgba(0, 0, 0, 0.19);
+		}
+
+		// Card 1: STILL HAVE QUESTIONS
+		.pa-rights-card-eyebrow {
+			font-family: $font-family-base;
+			font-weight: 600;
+			font-size: 1.6rem;
+			line-height: 1.2;
+			letter-spacing: 0.04rem;
+			color: #fff;
+			text-transform: uppercase;
+			margin: 0 0 1.4rem;
+		}
+
+		// "Free. Confidential. No commitment." — #848484!
+		.pa-rights-card-subtitle {
+			font-family: $font-family-base;
+			font-weight: 600;
+			font-size: 1.8rem;
+			line-height: 1.1;
+			color: #848484;
+			margin: 0 0 2rem;
+		}
+
+		// Gold button 313x45
+		.pa-rights-card .button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			background: $brand-gold;
+			border: 0;
+			border-radius: 0.9rem;
+			color: #000;
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.9rem;
+			letter-spacing: 0.133rem;
+			text-transform: uppercase;
+			text-decoration: none;
+			padding: 1.5rem;
+			transition: background 0.2s;
+
+			&:hover { background: $brand-gold-dark; color: #000; }
+		}
+
+		// Card 2: STATUTE
+		.pa-rights-card-statute-value {
+			font-family: $font-family-base;
+			font-weight: 600;
+			font-size: 2.8rem;
+			line-height: 1.1;
+			color: $brand-gold;
+			margin: 0 0 1.2rem;
+		}
+
+		.pa-rights-card-statute-desc {
+			font-family: $font-family-base;
+			font-weight: 400;
+			font-size: 1.8rem;
+			line-height: 1.4;
+			color: #fff;
+			margin: 0;
+		}
+	}
+
+	// ============================================================
+	//  FAQ accordion (lives inside .pa-rights grid)
+	// ============================================================
+	.pa-faq {
+		.pa-eyebrow {
+			font-family: $font-family-base;
+			font-weight: 600;
+			font-size: 1.6rem;
+			line-height: 1.2;
+			letter-spacing: 0.04rem;
+			color: #262626;
+			text-transform: uppercase;
+			margin: 0 0 2rem;
+		}
+
+		.pa-faq-list {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 1.4rem;
+		}
+
+		// Cream bg #e8e3d9, 13px radius, shadow
+		.pa-faq-item {
+			background: #e8e3d9;
+			border-radius: 1.3rem;
+			box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13);
+			overflow: hidden;
+		}
+
+		.pa-faq-question {
+			width: 100%;
+			background: none;
+			border: 0;
+			padding: 2.6rem 3rem 2.4rem;
+			cursor: pointer;
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.9rem;
+			line-height: 2.3rem;
+			color: #262626;
+			text-align: left;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 2rem;
+
+			i {
+				color: $brand-gold;
+				font-size: 2.3rem;
+				font-weight: 400;
+				transition: transform 0.25s;
+			}
+
+			&[aria-expanded="true"] i { transform: rotate(180deg); }
+		}
+
+		.pa-faq-answer {
+			display: none;
+			padding: 0 3rem 3rem;
+			font-family: $font-family-base;
+			font-weight: 400;
+			font-size: 1.8rem;
+			line-height: 1.4;
+			color: #262626;
+
+			p { margin: 0 0 1.5rem; &:last-child { margin-bottom: 0; } }
+		}
+
+		.pa-faq-item.is-open .pa-faq-answer { display: block; }
+	}
+
+	// ============================================================
+	//  DISCOVER — Further/Related/Cities/Referral on gold
+	//  (Figma node 2134:1401, 1440x935, bg #9b7839)
+	// ============================================================
+	.pa-discover {
+		background: $brand-gold;
+		color: #262626;
+		min-height: 93.5rem;
+		padding: 5.3rem 0 6rem; // y=5081-5028=53
+
+		// y=5081 / y=5539 / y=5739 — section sub-headings
+		.pa-discover-title {
+			font-family: $font-family-headline;
+			font-weight: $font-weight-headline;
+			font-style: normal;
+			font-size: 3.2rem;
+			line-height: 5rem;
+			letter-spacing: -0.032rem;
+			color: #262626;
+			margin: 0 0 2.5rem;
+		}
+
+		// y=5422 (Browse) / y=5840 (Contact Referral) — dark filled buttons
+		.pa-discover-button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			height: 4.5rem;
+			padding: 0 2.5rem;
+			background: #262626;
+			border: 0;
+			border-radius: 0.9rem;
+			color: $brand-gold;
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.9rem;
+			letter-spacing: 0.133rem;
+			text-transform: uppercase;
+			text-decoration: none;
+			transition: background 0.2s, color 0.2s;
+
+			&:hover { background: #000; color: lighten($brand-gold, 5%); }
+		}
+
+		// y=5514 / y=5711 — 1px dark dividers
+		.pa-discover-divider {
+			height: 1px;
+			background: #262626;
+			margin: 5rem 0 4rem 0;
+			border: 0;
+		}
+
+		// Two-column grid: Further Reading | Related Practice Areas
+		.pa-discover-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 5rem;
+
+			@media (max-width: $laptop) { grid-template-columns: 1fr; row-gap: 4rem; }
+		}
+
+		// --- Further reading ---
+		.pa-further-cards {
+			list-style: none;
+			margin: 0 0 3.5rem;
+			padding: 0;
+			display: grid;
+			grid-template-columns: repeat(2, 27.3rem);
+			column-gap: 1.5rem;
+			justify-content: start;
+
+			@media (max-width: $phablet) { grid-template-columns: 1fr; }
+		}
+
+		// 273x233 transparent border card with a 49x46 gold monogram tab at top-left
+		.pa-further-card {
+			background: transparent;
+			border-radius: 0;
+			overflow: visible;
+			position: relative;
+			// padding-top: 2.5rem; // space for the overlapping tab
+
+			a {
+				display: flex;
+				flex-direction: column;
+				gap: 1.4rem;
+				width: 27.3rem;
+				min-height: 100%;
+				padding: 2.7rem 1.2rem 2.4rem 1.2rem;
+				border: 1px solid #262626;
+				color: #262626;
+				text-decoration: none;
+				transition: background 0.2s;
+
+				&:hover { background: rgba(0, 0, 0, 0.05); }
+			}
+		}
+
+		// Gold monogram tab — sits ABOVE the card border at top-left
+		.pa-further-card-mark {
+			position: absolute;
+			top: -1.6rem;
+			left: 1.3rem;
+			width: 4.9rem;
+			height: 4.6rem;
+			background: $brand-gold;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #262626;
+			z-index: 2;
+			margin: 0;
+			padding: 0;
+			border: 0;
+
+			svg { width: 2.2rem; height: 3.1rem; display: block; }
+		}
+
+		.pa-further-card-title {
+			font-family: $font-family-base;
+			font-weight: 700;
+			font-size: 2.1rem;
+			line-height: 2.3rem;
+			color: #262626;
+			margin: 0;
+			max-width: 25rem;
+		}
+
+		.pa-further-card-excerpt {
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.8rem;
+			line-height: 2.1rem;
+			color: #262626;
+			margin: 0;
+			max-width: 25rem;
+		}
+
+		// --- Related practice areas: 2x2 grid of 273x108 ---
+		.pa-related-list {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: grid;
+			grid-template-columns: repeat(2, 27.3rem);
+			column-gap: 1.5rem;
+			row-gap: 1.5rem;
+			justify-content: start;
+
+			@media (max-width: $phablet) { grid-template-columns: 1fr; }
+		}
+
+		.pa-related-card {
+			a {
+				display: flex;
+				flex-direction: column;
+				gap: 0.8rem;
+				width: 27.3rem;
+				min-height: 10.8rem;
+				padding: 1.6rem 1.2rem;
+				border: 1px solid #262626;
+				color: #262626;
+				text-decoration: none;
+				transition: background 0.2s;
+
+				&:hover { background: rgba(0, 0, 0, 0.05); }
+			}
+
+			h3 {
+				font-family: $font-family-base;
+				font-weight: 700;
+				font-size: 2.1rem;
+				line-height: 2.3rem;
+				letter-spacing: -0.04rem;
+				color: #262626;
+				margin: 0;
+				max-width: 25rem;
+			}
+
+			p {
+				font-family: $font-family-base;
+				font-weight: 500;
+				font-size: 1.6rem;
+				line-height: 2rem;
+				color: #262626;
+				margin: 0;
+				max-width: 25rem;
+			}
+		}
+
+		// --- Cities ---
+		.pa-cities .pa-cities-list {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1.5rem;
+		}
+
+		// 45px tall border pill — Jost Bold 21px, NOT uppercase
+		.pa-city-pill {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			height: 4.5rem;
+			padding: 0 2.4rem;
+			border: 1px solid #262626;
+			border-radius: 0;
+			background: transparent;
+			color: #262626;
+			font-family: $font-family-base;
+			font-weight: 700;
+			font-size: 2.1rem;
+			line-height: 2.3rem;
+			letter-spacing: -0.04rem;
+			text-transform: none;
+			text-decoration: none;
+			transition: background 0.2s, color 0.2s;
+		}
+
+		a.pa-city-pill:hover {
+			background: #262626;
+			color: $brand-gold;
+		}
+
+		// STATEWIDE — dark filled, 9px radius, Jost Medium 19px gold uppercase
+		.pa-city-pill.is-statewide {
+			background: #262626;
+			color: $brand-gold;
+			border: 0;
+			border-radius: 0.9rem;
+			font-family: $font-family-base;
+			font-weight: 500;
+			font-size: 1.9rem;
+			letter-spacing: 0.133rem;
+			text-transform: uppercase;
+
+			&:hover { color: lighten($brand-gold, 5%); }
+		}
+
+		// --- Referral ---
+		.pa-referral {
+			.pa-discover-title { margin-bottom: 1.6rem; }
+
+			.pa-referral-content {
+				font-family: $font-family-base;
+				font-weight: 400;
+				font-size: 1.8rem;
+				line-height: 2.4rem;
+				letter-spacing: -0.04rem;
+				color: #262626;
+				margin: 0 0 2.5rem;
+				max-width: 87.1rem;
+			}
+		}
+	}
+}

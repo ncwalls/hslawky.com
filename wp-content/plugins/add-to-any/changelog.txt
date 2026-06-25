@@ -1,3 +1,6 @@
+= 1.8.18 =
+* Update admin styling for WordPress 7.0+
+
 = 1.8.17 =
 * Fix the expected default placement within Divi (thanks Holly)
 * Adjust WPBakery compatibility

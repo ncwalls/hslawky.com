@@ -49,17 +49,37 @@
 
 .site-header-logo {
 	flex-shrink: 0;
-	width: 35.6rem;
+	width: 19.4rem;
 	transition: width 0.3s;
 
 	@media (max-width: $tablet) {
-		width: 22rem;
+		// width: 22rem;
+		width: 16rem;
 	}
 	@media (max-width: $mobile) {
-		width: 20rem;
+		// width: 20rem;
 	}
 
 	.scrolled & {
+		width: 16rem;
+		
+		@media (max-width: $mobile) {
+			width: 13rem;
+		}
+	}
+
+	.home &{
+		width: 35.6rem;
+
+		@media (max-width: $tablet) {
+			width: 22rem;
+		}
+		@media (max-width: $mobile) {
+			width: 20rem;
+		}
+
+	}
+	.home.scrolled & {
 		width: 20rem;
 		
 		@media (max-width: $mobile) {

@@ -1,0 +1,641 @@
+{
+    "key": "group_6c1pa00002defaults",
+    "title": "Practice Area Defaults",
+    "fields": [
+        {
+            "key": "field_6c1pa00002000",
+            "label": "Practice Area Defaults",
+            "name": "practice_area_defaults",
+            "aria-label": "",
+            "type": "group",
+            "instructions": "Shared content shown on every Practice Area page.",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "block",
+            "sub_fields": [
+                {
+                    "key": "field_6c1pa00002001",
+                    "label": "What Happens When You Call",
+                    "name": "what_happens",
+                    "aria-label": "",
+                    "type": "group",
+                    "instructions": "",
+                    "required": false,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "layout": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_6c1pa00002002",
+                            "label": "Title",
+                            "name": "title",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_6c1pa00002003",
+                            "label": "Intro",
+                            "name": "intro",
+                            "aria-label": "",
+                            "type": "textarea",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "rows": 2,
+                            "new_lines": "",
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_6c1pa00002004",
+                            "label": "Steps",
+                            "name": "steps",
+                            "aria-label": "",
+                            "type": "repeater",
+                            "instructions": "3 steps recommended.",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "layout": "block",
+                            "min": 0,
+                            "max": 0,
+                            "button_label": "Add Step",
+                            "collapsed": "field_6c1pa00002005",
+                            "rows_per_page": 20,
+                            "sub_fields": [
+                                {
+                                    "key": "field_6c1pa00002005",
+                                    "label": "Title",
+                                    "name": "title",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": false,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "parent_repeater": "field_6c1pa00002004",
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": ""
+                                },
+                                {
+                                    "key": "field_6c1pa00002006",
+                                    "label": "Content",
+                                    "name": "content",
+                                    "aria-label": "",
+                                    "type": "textarea",
+                                    "instructions": "",
+                                    "required": false,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "rows": 3,
+                                    "new_lines": "",
+                                    "parent_repeater": "field_6c1pa00002004",
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "placeholder": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "key": "field_6c1pa00002007",
+                    "label": "Free Case Review",
+                    "name": "case_review",
+                    "aria-label": "",
+                    "type": "group",
+                    "instructions": "",
+                    "required": false,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "layout": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_6c1pa00002017",
+                            "label": "Eyebrow",
+                            "name": "eyebrow",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "Start Here",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_6c1pa00002008",
+                            "label": "Title",
+                            "name": "title",
+                            "aria-label": "",
+                            "type": "textarea",
+                            "instructions": "Wrap second line in <em>...<\/em> for italic-serif treatment.",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "rows": 2,
+                            "new_lines": "",
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_6c1pa00002009",
+                            "label": "Subtitle",
+                            "name": "subtitle",
+                            "aria-label": "",
+                            "type": "textarea",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "rows": 2,
+                            "new_lines": "",
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_6c1pa0000200a",
+                            "label": "Button",
+                            "name": "button",
+                            "aria-label": "",
+                            "type": "link",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "return_format": "array"
+                        },
+                        {
+                            "key": "field_6c1pa00002018",
+                            "label": "Trust Badges",
+                            "name": "trust_badges",
+                            "aria-label": "",
+                            "type": "repeater",
+                            "instructions": "Small dot-separated items below the buttons (e.g. \"No Fee Unless We Recover\", \"Free Case Review\", \"No Obligation\").",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "layout": "table",
+                            "min": 0,
+                            "max": 0,
+                            "button_label": "Add Badge",
+                            "collapsed": "field_6c1pa00002019",
+                            "rows_per_page": 20,
+                            "sub_fields": [
+                                {
+                                    "key": "field_6c1pa00002019",
+                                    "label": "Label",
+                                    "name": "label",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": false,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "parent_repeater": "field_6c1pa00002018",
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": ""
+                                }
+                            ]
+                        },
+                        {
+                            "key": "field_6c1pa0000200b",
+                            "label": "Stats",
+                            "name": "stats",
+                            "aria-label": "",
+                            "type": "repeater",
+                            "instructions": "Bordered stat boxes on the right.",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "layout": "table",
+                            "min": 0,
+                            "max": 0,
+                            "button_label": "Add Stat",
+                            "collapsed": "field_6c1pa0000200d",
+                            "rows_per_page": 20,
+                            "sub_fields": [
+                                {
+                                    "key": "field_6c1pa0000200c",
+                                    "label": "Value",
+                                    "name": "value",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": false,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "parent_repeater": "field_6c1pa0000200b",
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": ""
+                                },
+                                {
+                                    "key": "field_6c1pa0000200d",
+                                    "label": "Label",
+                                    "name": "label",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": false,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "parent_repeater": "field_6c1pa0000200b",
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "key": "field_6c1pa0000200e",
+                    "label": "Cities Served",
+                    "name": "cities",
+                    "aria-label": "",
+                    "type": "group",
+                    "instructions": "",
+                    "required": false,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "layout": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_6c1pa0000200f",
+                            "label": "Title",
+                            "name": "title",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_6c1pa00002010",
+                            "label": "Cities",
+                            "name": "items",
+                            "aria-label": "",
+                            "type": "repeater",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "layout": "table",
+                            "min": 0,
+                            "max": 0,
+                            "button_label": "Add City",
+                            "collapsed": "field_6c1pa00002011",
+                            "rows_per_page": 20,
+                            "sub_fields": [
+                                {
+                                    "key": "field_6c1pa00002011",
+                                    "label": "Name",
+                                    "name": "name",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": false,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "parent_repeater": "field_6c1pa00002010",
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": ""
+                                },
+                                {
+                                    "key": "field_6c1pa00002012",
+                                    "label": "Link",
+                                    "name": "link",
+                                    "aria-label": "",
+                                    "type": "link",
+                                    "instructions": "",
+                                    "required": false,
+                                    "conditional_logic": false,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "return_format": "array",
+                                    "parent_repeater": "field_6c1pa00002010"
+                                }
+                            ]
+                        },
+                        {
+                            "key": "field_6c1pa0000201a",
+                            "label": "Statewide Pill Label",
+                            "name": "statewide_label",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "Dark filled pill shown after the city list (e.g. \"Statewide\"). Leave blank to hide.",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "Statewide",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_6c1pa0000201b",
+                            "label": "Statewide Pill Link",
+                            "name": "statewide_link",
+                            "aria-label": "",
+                            "type": "link",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "return_format": "array"
+                        }
+                    ]
+                },
+                {
+                    "key": "field_6c1pa00002013",
+                    "label": "Attorney Referral",
+                    "name": "referral",
+                    "aria-label": "",
+                    "type": "group",
+                    "instructions": "",
+                    "required": false,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "layout": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_6c1pa00002014",
+                            "label": "Title",
+                            "name": "title",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_6c1pa00002015",
+                            "label": "Content",
+                            "name": "content",
+                            "aria-label": "",
+                            "type": "textarea",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "rows": 2,
+                            "new_lines": "",
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": ""
+                        },
+                        {
+                            "key": "field_6c1pa00002016",
+                            "label": "Button",
+                            "name": "button",
+                            "aria-label": "",
+                            "type": "link",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "return_format": "array"
+                        }
+                    ]
+                },
+                {
+                    "key": "field_6c1pa0000201c",
+                    "label": "Further Reading Heading",
+                    "name": "further_heading",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": false,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "Further reading",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_6c1pa0000201d",
+                    "label": "Further Reading Button Text",
+                    "name": "further_button_text",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": false,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "Browse All Resources",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_6c1pa0000201e",
+                    "label": "Related Areas Heading",
+                    "name": "related_heading",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": false,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "Related Practice Areas",
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "practice-area-defaults"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1782348370
+}
