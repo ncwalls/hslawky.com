@@ -19,6 +19,92 @@
             "layout": "block",
             "sub_fields": [
                 {
+                    "key": "field_6c1pa00002020",
+                    "label": "Hero Credentials",
+                    "name": "hero_credentials",
+                    "aria-label": "",
+                    "type": "repeater",
+                    "instructions": "Default credential row at the bottom of every practice area hero. A page can override this in its own Hero → Credentials field.",
+                    "required": false,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "layout": "block",
+                    "min": 0,
+                    "max": 4,
+                    "button_label": "Add Credential",
+                    "collapsed": "field_6c1pa00002023",
+                    "rows_per_page": 20,
+                    "sub_fields": [
+                        {
+                            "key": "field_6c1pa00002022",
+                            "label": "Value",
+                            "name": "value",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "Optional large value (e.g. \"40+\").",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "parent_repeater": "field_6c1pa00002020",
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_6c1pa00002023",
+                            "label": "Label",
+                            "name": "label",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "parent_repeater": "field_6c1pa00002020",
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_6c1pa00002024",
+                            "label": "Sublabel",
+                            "name": "sublabel",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": false,
+                            "conditional_logic": false,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "parent_repeater": "field_6c1pa00002020",
+                            "default_value": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        }
+                    ]
+                },
+                {
                     "key": "field_6c1pa00002001",
                     "label": "What Happens When You Call",
                     "name": "what_happens",
@@ -574,12 +660,12 @@
                     "append": ""
                 },
                 {
-                    "key": "field_6c1pa0000201d",
-                    "label": "Further Reading Button Text",
-                    "name": "further_button_text",
+                    "key": "field_6c1pa0000201f",
+                    "label": "Further Reading Button",
+                    "name": "further_button",
                     "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
+                    "type": "link",
+                    "instructions": "Browse-all-resources button below the Further Reading cards. Can link to the blog index, a category, or anywhere.",
                     "required": false,
                     "conditional_logic": false,
                     "wrapper": {
@@ -587,11 +673,7 @@
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "Browse All Resources",
-                    "maxlength": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
+                    "return_format": "array"
                 },
                 {
                     "key": "field_6c1pa0000201e",
@@ -637,5 +719,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1782348370
+    "modified": 1782488526
 }

@@ -13,8 +13,60 @@ get_header(); ?>
 	$clients_say = get_field('clients_say');
 	$rights      = get_field('rights');
 	$faq         = get_field('faq');
-	$defaults    = get_field('practice_area_defaults', 'option');
+	$defaults    = get_field('practice_area_defaults', 'option') ?: array();
 	$contact     = get_field('contact', 'option');
+
+	// Per-page overrides of the defaults. Each field falls back to the option value when blank.
+	// Scalars: page value wins when non-empty. Repeaters: page array wins when it has rows.
+	if(!function_exists('pa_apply_overrides')){
+		function pa_apply_overrides($override, $default){
+			if(!is_array($default)) $default = array();
+			if(!is_array($override) || empty($override)) return $default;
+			$out = $default;
+			foreach($override as $k => $v){
+				$has_value = $v !== '' && $v !== null && $v !== false && $v !== array();
+				if(!$has_value) continue;
+				// Repeaters / numeric arrays: replace whole list when page has at least one row.
+				if(is_array($v) && array_keys($v) === range(0, count($v) - 1)){
+					$out[$k] = $v;
+				}
+				// Nested group (associative array): recurse so each subfield falls back individually.
+				elseif(is_array($v) && (!isset($default[$k]) || is_array($default[$k]))){
+					$out[$k] = pa_apply_overrides($v, $default[$k] ?? array());
+				}
+				else {
+					$out[$k] = $v;
+				}
+			}
+			return $out;
+		}
+	}
+
+	$what_happens   = pa_apply_overrides(get_field('what_happens'),       $defaults['what_happens']   ?? array());
+	$case_review    = pa_apply_overrides(get_field('case_review'),        $defaults['case_review']    ?? array());
+	$cities         = pa_apply_overrides(get_field('cities'),             $defaults['cities']         ?? array());
+	$referral       = pa_apply_overrides(get_field('referral'),           $defaults['referral']       ?? array());
+	$further_heading = get_field('further_heading') ?: ($defaults['further_heading'] ?? 'Further reading');
+	$further_button  = get_field('further_button')  ?: ($defaults['further_button']  ?? null);
+	$related_heading = get_field('related_heading') ?: ($defaults['related_heading'] ?? 'Related Practice Areas');
+
+	// Posts in Further Reading: per-page picks (max 2) override the 2 latest.
+	$picked_posts = get_field('further_posts');
+	if($picked_posts){
+		$ids = array_map('intval', (array) $picked_posts);
+		$further_reading = get_posts(array(
+			'post_type'   => 'post',
+			'post__in'    => $ids,
+			'orderby'     => 'post__in',
+			'numberposts' => 2,
+		));
+	} else {
+		$further_reading = get_posts(array(
+			'numberposts' => 2,
+			'post_type'   => 'post',
+			'post_status' => 'publish',
+		));
+	}
 
 	$siblings  = get_pages(array(
 		'child_of'    => wp_get_post_parent_id($post),
@@ -22,12 +74,6 @@ get_header(); ?>
 		'exclude'     => array($post->ID),
 		'sort_column' => 'menu_order,post_title',
 		'sort_order'  => 'ASC',
-	));
-
-	$further_reading = get_posts(array(
-		'numberposts' => 2,
-		'post_type'   => 'post',
-		'post_status' => 'publish',
 	));
 
 	// H&S monogram for resource cards
@@ -56,11 +102,11 @@ get_header(); ?>
 						<a href="tel:<?php echo preg_replace('/[^0-9+]/', '', $contact['phone']); ?>" class="pa-hero-button-phone"><?php echo esc_html($contact['phone']); ?></a>
 					<?php endif; ?>
 				</div>
-				<?php if(!empty($defaults['case_review']['trust_badges'])): ?>
+				<?php if(!empty($case_review['trust_badges'])): ?>
 					<p class="pa-hero-trust">
 						<?php
 							$labels = array();
-							foreach($defaults['case_review']['trust_badges'] as $b){
+							foreach($case_review['trust_badges'] as $b){
 								if(!empty($b['label'])) $labels[] = esc_html($b['label']);
 							}
 							echo implode('  &nbsp;·&nbsp;  ', $labels);
@@ -69,11 +115,15 @@ get_header(); ?>
 				<?php endif; ?>
 			</div>
 		</div>
-		<?php if($hero && $hero['stats']): ?>
+		<?php
+			// Page-level hero.stats wins; otherwise show the site-wide hero credentials.
+			$hero_credentials = !empty($hero['stats']) ? $hero['stats'] : ($defaults['hero_credentials'] ?? array());
+		?>
+		<?php if($hero_credentials): ?>
 			<div class="pa-hero-credentials-wrap">
 				<div class="container">
 					<ul class="pa-hero-credentials">
-						<?php foreach($hero['stats'] as $stat): ?>
+						<?php foreach($hero_credentials as $stat): ?>
 							<li>
 								<?php if($stat['value']): ?><span class="pa-hero-cred-value"><?php echo esc_html($stat['value']); ?></span><?php endif; ?>
 								<?php if($stat['label']): ?><span class="pa-hero-cred-label"><?php echo esc_html($stat['label']); ?></span><?php endif; ?>
@@ -192,7 +242,7 @@ get_header(); ?>
 	<?php endif; ?>
 
 	<?php // ====== WHAT HAPPENS WHEN YOU CALL ====== ?>
-	<?php if($defaults && !empty($defaults['what_happens']) && !empty($defaults['what_happens']['steps'])): $wh = $defaults['what_happens']; ?>
+	<?php if(!empty($what_happens) && !empty($what_happens['steps'])): $wh = $what_happens; ?>
 	<section class="pa-section pa-what-happens">
 		<div class="container">
 			<?php if($wh['title']): ?>
@@ -219,7 +269,7 @@ get_header(); ?>
 	<?php endif; ?>
 
 	<?php // ====== START HERE — CASE REVIEW CTA ====== ?>
-	<?php if($defaults && !empty($defaults['case_review'])): $cr = $defaults['case_review']; if($cr['title']): ?>
+	<?php if(!empty($case_review)): $cr = $case_review; if(!empty($cr['title'])): ?>
 	<section class="pa-section pa-case-review">
 		<div class="container pa-case-review-inner">
 			<div class="pa-case-review-text">
@@ -302,7 +352,7 @@ get_header(); ?>
 					<?php endif; ?>
 					<?php
 						// Prefer the per-page Questions Card Button; fall back to the global case-review CTA.
-						$qbtn = !empty($rights['questions_card_button']) ? $rights['questions_card_button'] : (!empty($defaults['case_review']['button']) ? $defaults['case_review']['button'] : null);
+						$qbtn = !empty($rights['questions_card_button']) ? $rights['questions_card_button'] : (!empty($case_review['button']) ? $case_review['button'] : null);
 					?>
 					<?php if($qbtn): ?>
 						<a href="<?php echo esc_url($qbtn['url']); ?>" target="<?php echo esc_attr($qbtn['target']); ?>" class="button"><?php echo esc_html($qbtn['title']); ?></a>
@@ -356,7 +406,7 @@ get_header(); ?>
 
 				<?php if($further_reading): ?>
 				<div class="pa-further-reading">
-					<h2 class="pa-discover-title"><?php echo $defaults['further_heading'] ?: 'Further reading'; ?></h2>
+					<h2 class="pa-discover-title"><?php echo esc_html($further_heading); ?></h2>
 					<ul class="pa-further-cards">
 						<?php foreach($further_reading as $post_obj): setup_postdata($post_obj); ?>
 							<li class="pa-further-card">
@@ -370,19 +420,15 @@ get_header(); ?>
 							</li>
 						<?php endforeach; wp_reset_postdata(); ?>
 					</ul>
-					<?php
-						$blog_link = get_post_type_archive_link('post');
-						if(get_option('page_for_posts')) $blog_link = get_permalink(get_option('page_for_posts'));
-					?>
-					<?php if($blog_link): ?>
-						<a href="<?php echo esc_url($blog_link); ?>" class="pa-discover-button"><?php echo esc_html($defaults['further_button_text'] ?: 'Browse All Resources'); ?></a>
+					<?php if(!empty($further_button) && !empty($further_button['url'])): ?>
+						<a href="<?php echo esc_url($further_button['url']); ?>" target="<?php echo esc_attr($further_button['target']); ?>" class="pa-discover-button"><?php echo esc_html($further_button['title'] ?: 'Browse All Resources'); ?></a>
 					<?php endif; ?>
 				</div>
 				<?php endif; ?>
 
 				<?php if($siblings): ?>
 				<div class="pa-related-areas">
-					<h2 class="pa-discover-title"><?php echo $defaults['related_heading'] ?: 'Related Practice Areas'; ?></h2>
+					<h2 class="pa-discover-title"><?php echo esc_html($related_heading); ?></h2>
 					<ul class="pa-related-list">
 						<?php foreach($siblings as $sib): ?>
 							<li class="pa-related-card">
@@ -401,7 +447,7 @@ get_header(); ?>
 			</div>
 			<?php endif; ?>
 
-			<?php if($defaults && !empty($defaults['cities']) && !empty($defaults['cities']['items'])): $c = $defaults['cities']; ?>
+			<?php if(!empty($cities) && !empty($cities['items'])): $c = $cities; ?>
 			<div class="pa-discover-divider"></div>
 			<div class="pa-cities">
 				<?php if($c['title']): ?>
@@ -430,7 +476,7 @@ get_header(); ?>
 			</div>
 			<?php endif; ?>
 
-			<?php if($defaults && !empty($defaults['referral']) && $defaults['referral']['title']): $r = $defaults['referral']; ?>
+			<?php if(!empty($referral) && !empty($referral['title'])): $r = $referral; ?>
 			<div class="pa-discover-divider"></div>
 			<div class="pa-referral">
 				<h2 class="pa-discover-title"><?php echo $r['title']; ?></h2>
