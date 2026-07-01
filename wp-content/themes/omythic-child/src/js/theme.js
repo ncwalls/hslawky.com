@@ -206,6 +206,36 @@
 		});
 	};
 
+	// Practice Areas mega menu — hover intent. The full-width panel drops from the
+	// bottom of the (tall) header, so there's a vertical gap between the nav item
+	// and the panel. A short close delay lets the pointer cross that gap without
+	// the panel disappearing.
+	var megaMenuHover = function(){
+		var item = document.querySelector('.menu-item-mega');
+		if(!item) return;
+
+		var closeTimer;
+		var open = function(){ clearTimeout(closeTimer); item.classList.add('is-open'); };
+		var close = function(){
+			clearTimeout(closeTimer);
+			closeTimer = setTimeout(function(){ item.classList.remove('is-open'); }, 280);
+		};
+
+		item.addEventListener('mouseenter', open);
+		item.addEventListener('mouseleave', close);
+
+		var panel = item.querySelector('.mega-menu');
+		if(panel){
+			panel.addEventListener('mouseenter', open);
+			panel.addEventListener('mouseleave', close);
+		}
+
+		// Keyboard: close when focus leaves the item entirely.
+		item.addEventListener('focusout', function(e){
+			if(!item.contains(e.relatedTarget)) close();
+		});
+	};
+
 	$(document).ready(function(){
 		homeHeroSlider();
 		heroVideo();
@@ -216,6 +246,7 @@
 		reviewsSlider();
 		practiceAreaCardExpand();
 		practiceAreaFAQ();
+		megaMenuHover();
 	});
 
     window.addEventListener('load', function() {

@@ -312,6 +312,10 @@ $pa-cream-dark: #e6e0d0;
 		padding: 9.9rem 0 7rem; // y=865-802=63 to start; bottom space for testimonial
 		// overflow: visible;
 		
+		@media (max-width: $laptop) {
+			padding-top: 7rem;
+		}
+		
 		// Grid: image (829px) on left, sidebar (358px) on right
 		.pa-intro-grid {
 			display: grid;
@@ -439,7 +443,12 @@ $pa-cream-dark: #e6e0d0;
 			border: 0;
 			align-self: start;
 			position: sticky;
-			top: 0;
+			top: 8rem;
+
+			@media (max-width: $laptop) {
+				position: static;
+				top: 0;
+			}
 		}
 
 		// y=931 — sidebar heading
@@ -524,7 +533,7 @@ $pa-cream-dark: #e6e0d0;
 			grid-template-columns: 1fr 26rem;
 			column-gap: 6rem;
 			align-items: end;
-			width: 100%;
+			// width: 100%;
 
 			@media (max-width: $laptop) { grid-template-columns: 1fr; }
 		}
@@ -637,9 +646,18 @@ $pa-cream-dark: #e6e0d0;
 			display: flex;
 			flex-direction: column;
 			gap: 1.6rem;
+			width: 26rem;
+
+			@media (max-width: $laptop) {
+				width: 100%;
+				flex-direction: row;
+			} 
+			@media (max-width: $phablet) {
+				flex-direction: column;
+			}
 
 			li {
-				width: 26rem;
+				flex: 1;
 				// height: 9.3rem;
 				background: rgba(38, 38, 38, 0.13);
 				border: 1px solid #262626;
@@ -695,6 +713,10 @@ $pa-cream-dark: #e6e0d0;
 		background: #23262f;
 		color: #fff;
 		text-align: center;
+
+		@media (max-width: $laptop) {
+			text-align: left;
+		}
 
 		// y=2566 — Libre Baskerville Bold 42px lh 50px gold, NOT italic, tracking -0.42px
 		.pa-what-happens-title {
@@ -761,6 +783,10 @@ $pa-cream-dark: #e6e0d0;
 			margin: 0 0 1.5rem;
 			line-height: 1.2;
 			max-width: 34rem;
+
+			@media (max-width: $tablet) {
+				max-width: none;
+			}
 		}
 
 		// Jost Regular 16px lh 23px rgba(255,255,255,0.7)
@@ -772,6 +798,10 @@ $pa-cream-dark: #e6e0d0;
 			color: rgba(#fff, 0.7);
 			margin: 0;
 			max-width: 34rem;
+			
+			@media (max-width: $tablet) {
+				max-width: none;
+			}
 		}
 	}
 
@@ -1090,6 +1120,14 @@ $pa-cream-dark: #e6e0d0;
 			display: flex;
 			flex-direction: column;
 			gap: 1.4rem;
+			position: sticky;
+			top: 8rem;
+
+			@media (max-width: $laptop) {
+				margin-top: 6rem;
+				position: static;
+				top: 0;
+			}
 		}
 
 		// Dark sidebar cards — bg #23262f, NO border-radius, shadow
@@ -1255,7 +1293,7 @@ $pa-cream-dark: #e6e0d0;
 			font-weight: $font-weight-headline;
 			font-style: normal;
 			font-size: 3.2rem;
-			line-height: 5rem;
+			line-height: 1.2;
 			letter-spacing: -0.032rem;
 			color: #262626;
 			margin: 0 0 2.5rem;
@@ -1266,8 +1304,8 @@ $pa-cream-dark: #e6e0d0;
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			height: 4.5rem;
-			padding: 0 2.5rem;
+			// height: 4.5rem;
+			padding: 1rem 2.5rem;
 			background: #262626;
 			border: 0;
 			border-radius: 0.9rem;
@@ -1296,8 +1334,9 @@ $pa-cream-dark: #e6e0d0;
 			display: grid;
 			grid-template-columns: 1fr 1fr;
 			column-gap: 5rem;
+			width: 100%;
 
-			@media (max-width: $laptop) { grid-template-columns: 1fr; row-gap: 4rem; }
+			@media (max-width: $laptop) { grid-template-columns: 1fr; row-gap: 5rem; }
 		}
 
 		// --- Further reading ---
@@ -1306,10 +1345,15 @@ $pa-cream-dark: #e6e0d0;
 			margin: 0 0 3.5rem;
 			padding: 0;
 			display: grid;
-			grid-template-columns: repeat(2, 27.3rem);
+			grid-template-columns: 1fr 1fr;
 			column-gap: 1.5rem;
+			row-gap: 1.7rem;
 			justify-content: start;
-
+			
+			@media (max-width: $laptop) {
+				margin-bottom: 2rem;
+			}
+			
 			@media (max-width: $phablet) { grid-template-columns: 1fr; }
 		}
 
@@ -1325,7 +1369,7 @@ $pa-cream-dark: #e6e0d0;
 				display: flex;
 				flex-direction: column;
 				gap: 1.4rem;
-				width: 27.3rem;
+				// width: 27.3rem;
 				min-height: 100%;
 				padding: 2.7rem 1.2rem 2.4rem 1.2rem;
 				border: 1px solid #262626;
@@ -1333,7 +1377,12 @@ $pa-cream-dark: #e6e0d0;
 				text-decoration: none;
 				transition: background 0.2s;
 
-				&:hover { background: rgba(0, 0, 0, 0.05); }
+				&:hover {
+					//background: rgba(0, 0, 0, 0.05);
+					.pa-further-card-title{
+						text-decoration: underline;
+					}
+				}
 			}
 		}
 
@@ -1364,7 +1413,7 @@ $pa-cream-dark: #e6e0d0;
 			line-height: 2.3rem;
 			color: #262626;
 			margin: 0;
-			max-width: 25rem;
+			// max-width: 25rem;
 		}
 
 		.pa-further-card-excerpt {
@@ -1374,7 +1423,7 @@ $pa-cream-dark: #e6e0d0;
 			line-height: 2.1rem;
 			color: #262626;
 			margin: 0;
-			max-width: 25rem;
+			// max-width: 25rem;
 		}
 
 		// --- Related practice areas: 2x2 grid of 273x108 ---
@@ -1383,7 +1432,7 @@ $pa-cream-dark: #e6e0d0;
 			margin: 0;
 			padding: 0;
 			display: grid;
-			grid-template-columns: repeat(2, 27.3rem);
+			grid-template-columns: 1fr 1fr;
 			column-gap: 1.5rem;
 			row-gap: 1.5rem;
 			justify-content: start;
@@ -1396,8 +1445,9 @@ $pa-cream-dark: #e6e0d0;
 				display: flex;
 				flex-direction: column;
 				gap: 0.8rem;
-				width: 27.3rem;
-				min-height: 10.8rem;
+				width: 100%;
+				// width: 27.3rem;
+				// min-height: 10.8rem;
 				padding: 1.6rem 1.2rem;
 				border: 1px solid #262626;
 				color: #262626;
@@ -1415,7 +1465,7 @@ $pa-cream-dark: #e6e0d0;
 				letter-spacing: -0.04rem;
 				color: #262626;
 				margin: 0;
-				max-width: 25rem;
+				// max-width: 25rem;
 			}
 
 			p {
@@ -1425,7 +1475,7 @@ $pa-cream-dark: #e6e0d0;
 				line-height: 2rem;
 				color: #262626;
 				margin: 0;
-				max-width: 25rem;
+				// max-width: 25rem;
 			}
 		}
 
@@ -1488,7 +1538,7 @@ $pa-cream-dark: #e6e0d0;
 				font-family: $font-family-base;
 				font-weight: 400;
 				font-size: 1.8rem;
-				line-height: 2.4rem;
+				line-height: 1.3;
 				letter-spacing: -0.04rem;
 				color: #262626;
 				margin: 0 0 2.5rem;

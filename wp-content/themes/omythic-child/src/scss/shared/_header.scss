@@ -32,6 +32,9 @@
 		position: relative;
 		transition: padding 0.3s;
 
+		@media (max-width: $desktop) {
+			gap: 2rem;
+		}
 		@media (max-width: $laptop) {
 			padding: 3rem;
 		}
@@ -48,16 +51,12 @@
 }
 
 .site-header-logo {
-	flex-shrink: 0;
+	// flex-shrink: 0;
 	width: 19.4rem;
 	transition: width 0.3s;
 
 	@media (max-width: $tablet) {
-		// width: 22rem;
 		width: 16rem;
-	}
-	@media (max-width: $mobile) {
-		// width: 20rem;
 	}
 
 	.scrolled & {
@@ -69,7 +68,12 @@
 	}
 
 	.home &{
+		// flex-shrink: 1;
 		width: 35.6rem;
+
+		@media (max-width: $desktop) {
+			width: 30rem;
+		}
 
 		@media (max-width: $tablet) {
 			width: 22rem;
@@ -80,10 +84,16 @@
 
 	}
 	.home.scrolled & {
-		width: 20rem;
+		// width: 20rem;
+		
+		// @media (max-width: $mobile) {
+		// 	width: 16rem;
+		// }
+
+		width: 16rem;
 		
 		@media (max-width: $mobile) {
-			width: 16rem;
+			width: 13rem;
 		}
 	}
 
@@ -98,23 +108,102 @@
 	}
 }
 
+.site-header-content{
+	display: flex;
+	align-items: center;
+	gap: 3rem;
+	transition: padding 0.3s;
+
+	@media (max-width: $desktop) {
+		gap: 2rem;
+	}
+}
+
 .site-header-menu {
 	display: flex;
 	gap: 0.5rem;
-	margin-left: auto;
-	padding-top: 3rem;
-	transition: padding 0.3s;
+	// margin-left: auto;
+	// padding-top: 2.9rem;
+	// transition: padding 0.3s;
 	
 	@media (max-width: $tablet) {
 		padding: 0;
 	}
 	
 	.scrolled & {
-		padding-top: 1.5rem;
+		// padding-top: 1rem;
 	}
 
 	@media (max-width: $mobile-nav-breakpoint) {
 		display: none;
+	}
+}
+
+// Phone number pulled from Theme Options (contact group). Sits between the
+// desktop menu and the hamburger; stays visible when the menu collapses.
+.site-header-phone {
+	display: flex;
+	align-items: start;
+	// padding-top: 3.6rem;
+	// transition: padding 0.3s;
+
+	@media (max-width: $mobile-nav-breakpoint) {
+		margin-left: auto;
+		// padding-top: 2.2rem;
+	}
+	@media (max-width: $tablet) {
+		// padding-top: 1rem;
+	}
+
+	// .scrolled & {
+	// 	padding-top: 1.7rem;
+
+	// 	@media (max-width: $tablet) {
+	// 		padding-top: 0.5rem;
+	// 	}
+	// }
+
+	// .home &{
+
+	// 	@media (max-width: $mobile-nav-breakpoint) {
+	// 		margin-left: auto;
+	// 		padding-top: 3.2rem;
+	// 	}
+	// }
+
+	// .home.scrolled & {
+	// 	padding-top: 2.2rem;
+
+	// 	@media (max-width: $mobile-nav-breakpoint) {
+	// 		// padding-top: 0;
+	// 	}
+	// }
+
+
+	@media (max-width: $mobile) {
+		display: none;
+	}
+
+	a {
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+		color: $brand-gold;
+		font-family: $font-family-base;
+		font-size: 1.8rem;
+		font-weight: 600;
+		line-height: 1.2;
+		text-decoration: none;
+		white-space: nowrap;
+		transition: color 0.2s;
+
+		&:hover {
+			color: #fff;
+		}
+
+		i {
+			font-size: 1.5rem;
+		}
 	}
 }
 
@@ -168,6 +257,7 @@
 
 			.sub-menu {
 				background: $brand-gold;
+				border-radius: 0 0 1rem 1rem;
 				list-style: none;
 				margin: 0;
 				padding: 1rem 0;
@@ -186,7 +276,7 @@
 
 				li{
 					+ li{
-						margin-top: 1rem;
+						margin-top: 0.5rem;
 					}
 					a {
 						color: #fff;
@@ -203,6 +293,210 @@
 					}
 				}
 			}
+		}
+	}
+}
+
+// ============================================================
+//  PRACTICE AREAS MEGA MENU
+//  Desktop-only panel injected into the "Practice Areas" primary
+//  nav item. Hidden by default; revealed on hover/focus of the item.
+//  (Lives inside #large-nav-primary, which is display:none below the
+//  mobile-nav breakpoint, so it never shows on mobile.)
+// ============================================================
+
+// Full-window-width panel: drop it below the whole header, not the menu item.
+// Making the item position:static hands the absolute positioning context to
+// .site-header .inner (which is position:relative and spans the header width).
+#large-nav-primary .menu > li.menu-item-mega {
+	position: static;
+
+	// No real WP sub-menu here, so suppress the inherited sub-menu reveal.
+	&:hover > .sub-menu { max-height: 0; }
+}
+
+.mega-menu {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	background: $brand-blue-dark;
+	border-top: 3px solid $brand-gold;
+	box-shadow: 0 1.2rem 3rem rgba(#000, 0.35);
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(1rem);
+	pointer-events: none;
+	transition: opacity 0.25s, transform 0.25s, visibility 0.25s;
+	z-index: 20;
+
+	// .is-open is toggled by JS (hover intent) so the panel survives the pointer
+	// crossing the gap between the nav item and the panel. :hover / :focus-within
+	// are kept as no-JS fallbacks.
+	.menu-item-mega.is-open &,
+	.menu-item-mega:hover &,
+	.menu-item-mega:focus-within & {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+		pointer-events: auto;
+	}
+}
+
+.mega-inner {
+	max-width: 136rem;
+	margin: 0 auto;
+	padding: 3.6rem 2.8rem 4rem;
+	display: grid;
+	grid-template-columns: 32rem 1fr;
+	gap: 4.4rem;
+
+	@media (max-width: $desktop) {
+		grid-template-columns: 31rem 1fr;
+		gap: 3rem;
+	}
+}
+
+// --- Left promo feature ---
+.mega-feature {
+	display: flex;
+	flex-direction: column;
+	padding-right: 4rem;
+	border-right: 1px solid rgba(#fff, 0.12);
+}
+
+.mega-feature-eyebrow {
+	font-family: $font-family-base;
+	font-size: 1.1rem;
+	font-weight: 600;
+	letter-spacing: 0.28em;
+	text-transform: uppercase;
+	color: $brand-gold;
+	margin-bottom: 1.6rem;
+}
+
+.mega-feature-title {
+	font-family: $font-family-headline;
+	font-weight: $font-weight-headline;
+	font-size: 2rem;
+	line-height: 1.22;
+	color: #fff;
+	margin: 0 0 1.4rem;
+}
+
+.mega-feature-text {
+	font-size: 1.4rem;
+	line-height: 1.6;
+	color: rgba(#fff, 0.7);
+	margin: 0 0 1.6rem;
+}
+
+.mega-feature-stamp {
+	margin: auto 0 2rem;
+	padding-top: 1.6rem;
+	border-top: 1px solid rgba(#fff, 0.12);
+	font-size: 1.3rem;
+	font-weight: 600;
+	line-height: 1.5;
+	color: #fff;
+}
+
+.mega-feature-cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.9rem;
+	padding: 1.4rem 1.8rem;
+	border-radius: 2px;
+	background: $brand-gold;
+	color: #fff;
+	font-family: $font-family-base;
+	font-size: 1.3rem;
+	font-weight: 600;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	text-decoration: none;
+	transition: background 0.2s;
+
+	&:hover,
+	&:focus {
+		background: $brand-gold-dark;
+	}
+
+	.mega-feature-cta-arrow {
+		display: inline-flex;
+		transition: transform 0.2s;
+		font-size: 1.2rem;
+	}
+
+	&:hover .mega-feature-cta-arrow {
+		transform: translateX(0.3rem);
+	}
+}
+
+.mega-feature-call {
+	margin-top: 1.4rem;
+	font-size: 1.2rem;
+	letter-spacing: 0.03em;
+	color: rgba(#fff, 0.6);
+
+	a {
+		color: #fff;
+		text-decoration: none;
+		border-bottom: 1px solid rgba(#fff, 0.3);
+		transition: color 0.2s, border-color 0.2s;
+
+		&:hover {
+			color: $brand-gold;
+			border-color: $brand-gold;
+		}
+	}
+}
+
+// --- Right category grid ---
+.mega-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 2.8rem 3.4rem;
+	align-content: start;
+
+	@media (max-width: $desktop) {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+.mega-cat {
+	// Category head is the practice-area name — a heading, not a link.
+	.mega-cat-head {
+		display: block;
+		font-family: $font-family-headline;
+		font-weight: $font-weight-headline;
+		font-size: 1.6rem;
+		line-height: 1.25;
+		color: #fff;
+		padding-bottom: 1rem;
+		margin-bottom: 1rem;
+		border-bottom: 1px solid rgba($brand-gold, 0.55);
+	}
+}
+
+.mega-cat-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+
+	li a {
+		display: block;
+		padding: 0.5rem 0;
+		font-size: 1.4rem;
+		line-height: 1.4;
+		color: rgba(#fff, 0.7);
+		text-decoration: none;
+		transition: color 0.2s;
+
+		&:hover,
+		&:focus {
+			color: $brand-gold;
 		}
 	}
 }
@@ -250,11 +544,32 @@
 	position: relative;
 	width: 5rem;
 	flex-shrink: 0;
-	margin-top: 3rem;
-	transition: margin 0.3s;
+	// margin-top: 3rem;
+	margin-top: -0.3rem;
+	// transition: margin 0.3s;
+
+	// @media (max-width: $mobile-nav-breakpoint) {
+	// 	// margin-top: 2rem;
+	// }
 	
-	@media (max-width: $tablet) {
-		margin-top: 0;
+	// @media (max-width: $tablet) {
+	// 	// margin-top: 0;
+	// }
+
+	// .scrolled & {
+	// 	margin-top: 1.5rem;
+	
+	// 	@media (max-width: $tablet) {
+	// 		margin-top: 0;
+	// 	}
+	// }
+
+	.home &{
+		// margin-top: 3.3rem;
+	}
+	
+	.home.scrolled &{
+		// margin-top: 1.6rem;
 	}
 
 	&:hover{
@@ -265,13 +580,6 @@
 		}
 	}
 	
-	.scrolled & {
-		margin-top: 2rem;
-	
-		@media (max-width: $tablet) {
-			margin-top: 0;
-		}
-	}
 
 	&:before,
 	&:after,
@@ -519,10 +827,10 @@
 		.sub-menu {
 			list-style: none;
 			margin: 0;
-			padding: 0 0 0 1.5rem;
+			padding: 0 0 1rem 1.5rem;
 
 			li {
-				margin-bottom: 1.5rem;
+				margin: 1rem 0 0 0;
 				padding: 0 0 0 1.5rem;
 				position: relative;
 
@@ -589,6 +897,21 @@
 			> .sub-menu-wrap { grid-template-rows: 1fr; }
 			> .ocn-link-wrap > .ocn-sub-menu-button:after { transform: rotate(-180deg); }
 		}
+
+		// Injected Practice Areas accordion: show the chevron toggle at every
+		// nesting level (the base rule only targets top-level > li items).
+		.sub-menu .menu-item-has-children > .ocn-link-wrap > .ocn-sub-menu-button {
+			display: block;
+		}
+	}
+}
+
+// The primary menu (incl. Practice Areas) is injected into the pop-out only at
+// the breakpoints where the desktop main menu is hidden. Above that, the real
+// header menu / mega menu already covers it.
+.ocn-primary-item {
+	@media (min-width: ($mobile-nav-breakpoint + 1)) {
+		display: none;
 	}
 }
 

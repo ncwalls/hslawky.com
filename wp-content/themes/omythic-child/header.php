@@ -77,19 +77,29 @@
 					<img src="<?php the_field( 'default_logo', 'option' ); ?>" alt="<?php bloginfo( 'name' ); ?>">
 				</a>
 			</div>
-			<div class="site-header-menu">
-				<?php
-					wp_nav_menu( array(
-						'container' => 'nav',
-						'container_id' => 'large-nav-primary',
-						'theme_location' => 'primary'
-					) );
-				?>
+			<div class="site-header-content">
+				<div class="site-header-menu">
+					<?php
+						wp_nav_menu( array(
+							'container' => 'nav',
+							'container_id' => 'large-nav-primary',
+							'theme_location' => 'primary'
+						) );
+					?>
+				</div>
+				<?php if ( $ocn_contact && $ocn_contact['phone'] ) : ?>
+					<div class="site-header-phone">
+						<a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $ocn_contact['phone'] ) ); ?>">
+							<i class="fas fa-phone" aria-hidden="true"></i>
+							<span><?php echo esc_html( $ocn_contact['phone'] ); ?></span>
+						</a>
+					</div>
+				<?php endif; ?>
+				<button name="Mobile navigation toggle" aria-pressed="false" class="nav-toggle" type="button" id="nav-toggle" aria-labelledby="nav-toggle-label">
+					<span class="screen-reader-text" id="nav-toggle-label">Open off canvas navigation</span>
+					<span class="middle-bar"></span>
+				</button>
 			</div>
-			<button name="Mobile navigation toggle" aria-pressed="false" class="nav-toggle" type="button" id="nav-toggle" aria-labelledby="nav-toggle-label">
-				<span class="screen-reader-text" id="nav-toggle-label">Open off canvas navigation</span>
-				<span class="middle-bar"></span>
-			</button>
 		</div>
 	</header>
 

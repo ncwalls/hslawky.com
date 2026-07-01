@@ -833,6 +833,267 @@ class sub_menu_walker extends Walker_Nav_Menu {
     }
 }
 
+
+/*************************************************
+ * Practice Areas mega menu (desktop primary nav)
+ *
+ * Drops a panel under the "Practice Areas" menu item built from the page
+ * hierarchy under the Practice Areas page. Top-level practice areas are
+ * column headings; only the deepest (leaf) page in each branch is a link —
+ * an area with no subpages links to itself.
+ *************************************************/
+
+/* ID of the "Practice Areas" page (the menu item links to it). Cached per request. */
+function omythic_practice_areas_page_id(){
+	static $id = null;
+	if ( $id !== null ) return $id;
+	$page = get_page_by_path( 'practice-areas' );
+	$id = $page ? (int) $page->ID : 0;
+	return $id;
+}
+
+/* True if the page has at least one child page. */
+function omythic_page_has_children( $page_id ){
+	return (bool) get_pages( array(
+		'child_of' => $page_id,
+		'parent'   => $page_id,
+		'number'   => 1,
+	) );
+}
+
+/* Left-hand promo feature block, populated from Theme Options → Practice Menu. */
+function omythic_mega_feature_html(){
+	$feature = get_field( 'mega_feature', 'option' );
+	$contact = get_field( 'contact', 'option' );
+
+	$has_feature = $feature && ( ! empty( $feature['eyebrow'] ) || ! empty( $feature['title'] ) || ! empty( $feature['content'] ) );
+	$has_phone   = $contact && ! empty( $contact['phone'] );
+	if ( ! $has_feature && ! $has_phone ) return '';
+
+	$out = '<div class="mega-feature">';
+	if ( ! empty( $feature['eyebrow'] ) ) {
+		$out .= '<span class="mega-feature-eyebrow">' . esc_html( $feature['eyebrow'] ) . '</span>';
+	}
+	if ( ! empty( $feature['title'] ) ) {
+		$out .= '<h3 class="mega-feature-title">' . esc_html( $feature['title'] ) . '</h3>';
+	}
+	if ( ! empty( $feature['content'] ) ) {
+		$out .= '<p class="mega-feature-text">' . wp_kses_post( $feature['content'] ) . '</p>';
+	}
+	if ( ! empty( $feature['stamp'] ) ) {
+		$out .= '<p class="mega-feature-stamp">' . esc_html( $feature['stamp'] ) . '</p>';
+	}
+	if ( ! empty( $feature['button'] ) ) {
+		$b = $feature['button'];
+		$out .= '<a class="mega-feature-cta" href="' . esc_url( $b['url'] ) . '" target="' . esc_attr( $b['target'] ) . '">';
+		$out .= esc_html( $b['title'] );
+		$out .= ' <span class="mega-feature-cta-arrow"><i class="fas fa-arrow-right"></i></span></a>';
+	}
+	if ( $has_phone ) {
+		$tel = preg_replace( '/[^0-9+]/', '', $contact['phone'] );
+		$out .= '<span class="mega-feature-call">Or call <a href="tel:' . esc_attr( $tel ) . '">' . esc_html( $contact['phone'] ) . '</a></span>';
+	}
+	$out .= '</div>';
+	return $out;
+}
+
+/* Build the full-width mega menu panel for the Practice Areas item.
+ * Layout: promo feature (left) + grid of practice-area categories (right).
+ * Each category head links to the practice-area page; its direct child
+ * pages are listed as links beneath it. */
+function omythic_practice_areas_mega_menu( $parent_id ){
+	$areas = get_pages( array(
+		'child_of'    => $parent_id,
+		'parent'      => $parent_id,
+		'sort_column' => 'menu_order,post_title',
+		'sort_order'  => 'ASC',
+	) );
+	if ( ! $areas ) return '';
+
+	$out  = '<div class="mega-menu"><div class="mega-inner">';
+	$out .= omythic_mega_feature_html();
+
+	$out .= '<div class="mega-grid">';
+	foreach ( $areas as $area ) {
+		$children = get_pages( array(
+			'child_of'    => $area->ID,
+			'parent'      => $area->ID,
+			'sort_column' => 'menu_order,post_title',
+			'sort_order'  => 'ASC',
+		) );
+
+		$out .= '<div class="mega-cat">';
+		// Practice-area name is a heading, not a link — only child pages link.
+		$out .= '<div class="mega-cat-head">' . get_the_title( $area->ID ) . '</div>';
+		if ( $children ) {
+			$out .= '<ul class="mega-cat-list">';
+			foreach ( $children as $child ) {
+				$out .= '<li><a href="' . esc_url( get_permalink( $child->ID ) ) . '">' . get_the_title( $child->ID ) . '</a></li>';
+			}
+			$out .= '</ul>';
+		}
+		$out .= '</div>';
+	}
+	$out .= '</div>';
+
+	$out .= '</div></div>';
+	return $out;
+}
+
+/* Flag the Practice Areas primary-menu item so it gets the dropdown chevron + hover hooks. */
+add_filter( 'nav_menu_css_class', 'omythic_pa_menu_classes', 10, 4 );
+function omythic_pa_menu_classes( $classes, $item, $args, $depth ){
+	if ( $depth !== 0 ) return $classes;
+	if ( ! isset( $args->theme_location ) || $args->theme_location !== 'primary' ) return $classes;
+	$pa_id = omythic_practice_areas_page_id();
+	if ( $pa_id && $item->object === 'page' && (int) $item->object_id === $pa_id ) {
+		$classes[] = 'menu-item-has-children';
+		$classes[] = 'menu-item-mega';
+	}
+	return $classes;
+}
+
+/* Inject the mega menu panel inside the Practice Areas <li>. */
+add_filter( 'walker_nav_menu_start_el', 'omythic_pa_menu_mega', 10, 4 );
+function omythic_pa_menu_mega( $item_output, $item, $depth, $args ){
+	if ( $depth !== 0 ) return $item_output;
+	if ( ! isset( $args->theme_location ) || $args->theme_location !== 'primary' ) return $item_output;
+	$pa_id = omythic_practice_areas_page_id();
+	if ( $pa_id && $item->object === 'page' && (int) $item->object_id === $pa_id ) {
+		$item_output .= omythic_practice_areas_mega_menu( $pa_id );
+	}
+	return $item_output;
+}
+
+/* ---------------------------------------------------------------
+ * Off-canvas (pop-out) version of the Practice Areas tree.
+ * Below the desktop-nav breakpoint the main menu is hidden, so the
+ * same hierarchy is injected into the pop-out menu as an expandable
+ * accordion. Markup mirrors what sub_menu_walker + the menu's
+ * before/after args produce so the framework's toggle JS works.
+ * ------------------------------------------------------------- */
+
+/* Build the 2-level Practice Areas accordion for the pop-out: each practice
+ * area is a non-linked toggle heading; its direct child pages are the links.
+ * Mirrors the desktop mega menu (heads not linked, only child pages linked). */
+function omythic_pa_ocn_tree( $parent_id ){
+	$areas = get_pages( array(
+		'child_of'    => $parent_id,
+		'parent'      => $parent_id,
+		'sort_column' => 'menu_order,post_title',
+		'sort_order'  => 'ASC',
+	) );
+	if ( ! $areas ) return '';
+
+	$out = '<div class="sub-menu-wrap"><ul class="sub-menu">';
+	foreach ( $areas as $area ) {
+		$children = get_pages( array(
+			'child_of'    => $area->ID,
+			'parent'      => $area->ID,
+			'sort_column' => 'menu_order,post_title',
+			'sort_order'  => 'ASC',
+		) );
+
+		$out .= '<li class="menu-item' . ( $children ? ' menu-item-has-children' : '' ) . '">';
+		$out .= '<span class="ocn-link-wrap">';
+		// Practice-area name is not a link — tap toggles its children.
+		$out .= '<a href="#">' . get_the_title( $area->ID ) . '</a>';
+		if ( $children ) {
+			$out .= '<button aria-pressed="false" name="Menu item dropdown toggle" class="ocn-sub-menu-button"></button>';
+		}
+		$out .= '</span>';
+		if ( $children ) {
+			$out .= '<div class="sub-menu-wrap"><ul class="sub-menu">';
+			foreach ( $children as $child ) {
+				$out .= '<li class="menu-item"><span class="ocn-link-wrap">';
+				$out .= '<a href="' . esc_url( get_permalink( $child->ID ) ) . '">' . get_the_title( $child->ID ) . '</a>';
+				$out .= '</span></li>';
+			}
+			$out .= '</ul></div>';
+		}
+		$out .= '</li>';
+	}
+	$out .= '</ul></div>';
+	return $out;
+}
+
+/* The Practice Areas pop-out <li>: non-link toggle heading + page-hierarchy accordion. */
+function omythic_pa_ocn_li( $pa_id ){
+	$li  = '<li class="menu-item menu-item-has-children ocn-primary-item ocn-pa-item">';
+	$li .= '<span class="ocn-link-wrap">';
+	$li .= '<a href="#">' . get_the_title( $pa_id ) . '</a>';
+	$li .= '<button aria-pressed="false" name="Menu item dropdown toggle" class="ocn-sub-menu-button"></button>';
+	$li .= '</span>';
+	$li .= omythic_pa_ocn_tree( $pa_id );
+	$li .= '</li>';
+	return $li;
+}
+
+/* Render the primary (desktop) menu as pop-out accordion markup. The Practice
+ * Areas item becomes the page-hierarchy accordion; every other item uses its
+ * normal link and WP sub-menu. */
+function omythic_primary_menu_ocn_html(){
+	$locations = get_nav_menu_locations();
+	$menu_id   = isset( $locations['primary'] ) ? $locations['primary'] : 0;
+	if ( ! $menu_id ) return '';
+	$items = wp_get_nav_menu_items( $menu_id );
+	if ( ! $items ) return '';
+
+	$pa_id     = omythic_practice_areas_page_id();
+	$by_parent = array();
+	foreach ( $items as $it ) {
+		$by_parent[ (int) $it->menu_item_parent ][] = $it;
+	}
+	$tops = isset( $by_parent[0] ) ? $by_parent[0] : array();
+
+	$out = '';
+	foreach ( $tops as $it ) {
+		// Practice Areas → the page-hierarchy accordion.
+		if ( $pa_id && $it->object === 'page' && (int) $it->object_id === $pa_id ) {
+			$out .= omythic_pa_ocn_li( $pa_id );
+			continue;
+		}
+
+		$kids     = isset( $by_parent[ (int) $it->ID ] ) ? $by_parent[ (int) $it->ID ] : array();
+		$has_kids = ! empty( $kids );
+
+		$out .= '<li class="menu-item ocn-primary-item' . ( $has_kids ? ' menu-item-has-children' : '' ) . '">';
+		$out .= '<span class="ocn-link-wrap"><a href="' . esc_url( $it->url ) . '">' . $it->title . '</a>';
+		if ( $has_kids ) {
+			$out .= '<button aria-pressed="false" name="Menu item dropdown toggle" class="ocn-sub-menu-button"></button>';
+		}
+		$out .= '</span>';
+		if ( $has_kids ) {
+			$out .= '<div class="sub-menu-wrap"><ul class="sub-menu">';
+			foreach ( $kids as $kid ) {
+				$out .= '<li class="menu-item"><span class="ocn-link-wrap"><a href="' . esc_url( $kid->url ) . '">' . $kid->title . '</a></span></li>';
+			}
+			$out .= '</ul></div>';
+		}
+		$out .= '</li>';
+	}
+	return $out;
+}
+
+/* Inject the primary menu (incl. the Practice Areas accordion) at the top of the
+ * pop-out — right after the first item (the "Contact / Case Reviews" CTA pill),
+ * so the CTA keeps its pill styling. Only visible below the desktop-nav
+ * breakpoint (see .ocn-primary-item in SCSS), where the main menu is hidden. */
+add_filter( 'wp_nav_menu_items', 'omythic_pa_ocn_inject', 10, 2 );
+function omythic_pa_ocn_inject( $items, $args ){
+	if ( ! isset( $args->container_id ) || $args->container_id !== 'ocn-nav-popout' ) return $items;
+
+	$block = omythic_primary_menu_ocn_html();
+	if ( ! $block ) return $items;
+
+	$pos = strpos( $items, '</li>' );
+	if ( $pos !== false ) {
+		$pos += strlen( '</li>' );
+		return substr( $items, 0, $pos ) . $block . substr( $items, $pos );
+	}
+	return $block . $items;
+}
+
 /* single pagination custom order prev */
 // function get_custom_previous_post( $post ) {
 //     if ( !$post ) {

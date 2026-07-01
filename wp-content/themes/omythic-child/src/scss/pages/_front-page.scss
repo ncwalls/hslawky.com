@@ -648,6 +648,45 @@
 }
 
 
+// Practice Areas overview page — same grid on a white background,
+// so the dark-scheme text/hover colors are inverted to stay readable.
+.practice-areas-overview {
+	background: #fff;
+	color: $brand-grey-dark;
+
+	.section-intro {
+		color: $brand-grey-med;
+	}
+
+	.card-title {
+		color: $brand-blue-dark;
+	}
+
+	.card-excerpt {
+		color: $brand-grey-med;
+	}
+
+	.card-types .card-type {
+		&::before {
+			color: rgba($brand-grey-dark, 0.6);
+		}
+
+		a {
+			color: $brand-grey-med;
+		}
+	}
+
+	.card-more {
+		color: $brand-grey-dark;
+	}
+
+	.practice-area-card-inner:hover {
+		background: #F6F5F1;
+		box-shadow: 0 0.3rem 2.3rem rgba(0, 0, 0, 0.12);
+	}
+}
+
+
 // ============================================================
 //  ADVANTAGES
 // ============================================================

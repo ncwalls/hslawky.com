@@ -374,26 +374,26 @@ get_header(); ?>
 				</div>
 				<?php endif; ?>
 			</aside>
-
-			<?php if($faq && !empty($faq['items'])): ?>
-			<div class="pa-faq">
-				<?php if($faq['title']): ?>
-					<p class="pa-eyebrow"><?php echo $faq['title']; ?></p>
-				<?php endif; ?>
-				<ul class="pa-faq-list">
-					<?php foreach($faq['items'] as $i => $item): $open = $i === 0; ?>
-						<li class="pa-faq-item<?php echo $open ? ' is-open' : ''; ?>">
-							<button class="pa-faq-question" type="button" aria-expanded="<?php echo $open ? 'true' : 'false'; ?>">
-								<span><?php echo esc_html($item['question']); ?></span>
-								<i class="far fa-chevron-down"></i>
-							</button>
-							<div class="pa-faq-answer wysiwyg"><?php echo $item['answer']; ?></div>
-						</li>
-					<?php endforeach; ?>
-				</ul>
-			</div>
-			<?php endif; ?>
 		</div>
+
+		<?php if($faq && !empty($faq['items'])): ?>
+		<div class="pa-faq container">
+			<?php if($faq['title']): ?>
+				<p class="pa-eyebrow"><?php echo $faq['title']; ?></p>
+			<?php endif; ?>
+			<ul class="pa-faq-list">
+				<?php foreach($faq['items'] as $i => $item): $open = $i === 0; ?>
+					<li class="pa-faq-item<?php echo $open ? ' is-open' : ''; ?>">
+						<button class="pa-faq-question" type="button" aria-expanded="<?php echo $open ? 'true' : 'false'; ?>">
+							<span><?php echo esc_html($item['question']); ?></span>
+							<i class="far fa-chevron-down"></i>
+						</button>
+						<div class="pa-faq-answer wysiwyg"><?php echo $item['answer']; ?></div>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+		<?php endif; ?>
 	</section>
 	<?php endif; ?>
 
