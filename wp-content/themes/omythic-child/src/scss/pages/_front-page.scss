@@ -218,6 +218,57 @@
 		@media (max-width: $tablet) {
 			margin-top: 3rem;
 		}
+
+		+ .hero-video-btn {
+			margin-left: 2rem;
+
+			@media (max-width: $mobile) {
+				margin-top: 2rem;
+			}
+		}
+	}
+
+	.hero-video-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 1rem;
+		margin-top: 2.5rem;
+		padding: 0;
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: #fff;
+		font-family: $font-family-base;
+		font-weight: 500;
+		font-size: 1.7rem;
+		letter-spacing: 0.05em;
+		text-decoration: none;
+		text-transform: uppercase;
+		transition: color 0.25s;
+
+		.hero-video-btn-icon {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 4rem;
+			height: 4rem;
+			border-radius: 50%;
+			border: 2px solid $brand-gold;
+			color: $brand-gold;
+			font-size: 1.6rem;
+			padding-left: 0.3rem; // optical centering of the play triangle
+			transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.25s;
+		}
+
+		&:hover {
+			color: $brand-gold;
+
+			.hero-video-btn-icon {
+				background: $brand-gold;
+				color: $brand-black;
+				transform: scale(1.05);
+			}
+		}
 	}
 
 	.hero-phone{
@@ -240,6 +291,31 @@
 
 		&:hover{
 			color: #fff;
+		}
+	}
+}
+
+
+// ============================================================
+//  HERO VIDEO POPUP (Magnific — content moved to end of <body>)
+// ============================================================
+
+.hero-popup {
+
+	// Inline (video file) popup — constrain to a 16:9 box
+	.hero-video-modal-wrap {
+		background: $brand-black;
+		max-width: 96rem;
+		width: 100%;
+		margin: 2rem auto;
+		line-height: 0;
+
+		video {
+			display: block;
+			width: 100%;
+			height: auto;
+			aspect-ratio: 16 / 9;
+			background: $brand-black;
 		}
 	}
 }

@@ -230,6 +230,126 @@
                     },
                     "width": "",
                     "height": ""
+                },
+                {
+                    "key": "field_6a45d09d4b9ac",
+                    "label": "Popup Video Type",
+                    "name": "popup_video_type",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "video_file": "File",
+                        "video_url": "URL"
+                    },
+                    "default_value": false,
+                    "return_format": "value",
+                    "multiple": 0,
+                    "allow_null": 0,
+                    "allow_in_bindings": 1,
+                    "ui": 0,
+                    "ajax": 0,
+                    "placeholder": "",
+                    "create_options": 0,
+                    "save_options": 0
+                },
+                {
+                    "key": "field_6a45d0a34b9ad",
+                    "label": "Popup Video File",
+                    "name": "popup_video_file",
+                    "aria-label": "",
+                    "type": "file",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_6a45d09d4b9ac",
+                                "operator": "==",
+                                "value": "video_file"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "library": "all",
+                    "min_size": "",
+                    "max_size": "",
+                    "mime_types": "mp4",
+                    "allow_in_bindings": 1
+                },
+                {
+                    "key": "field_6a45d0a94b9ae",
+                    "label": "Popup Video URL",
+                    "name": "popup_video_url",
+                    "aria-label": "",
+                    "type": "url",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_6a45d09d4b9ac",
+                                "operator": "==",
+                                "value": "video_url"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": ""
+                },
+                {
+                    "key": "field_6a45d0af4b9af",
+                    "label": "Popup Video Button Text",
+                    "name": "popup_video_button_text",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_6a45d09d4b9ac",
+                                "operator": "==",
+                                "value": "video_file"
+                            }
+                        ],
+                        [
+                            {
+                                "field": "field_6a45d09d4b9ac",
+                                "operator": "==",
+                                "value": "video_url"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "Watch Video",
+                    "maxlength": "",
+                    "placeholder": "Watch Video",
+                    "prepend": "",
+                    "append": "",
+                    "allow_in_bindings": 1
                 }
             ]
         },
@@ -1728,5 +1848,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1782488463
+    "modified": 1782963156
 }

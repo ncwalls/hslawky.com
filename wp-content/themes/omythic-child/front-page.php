@@ -69,6 +69,27 @@
 				<?php if($hero['button']): $btn = $hero['button']; ?>
 					<a href="<?php echo $btn['url']; ?>" target="<?php echo esc_attr($btn['target']); ?>" class="button"><?php echo $btn['title']; ?></a>
 				<?php endif; ?>
+
+				<?php // Popup video button ?>
+				<?php
+					$popup_type  = $hero['popup_video_type'];
+					$popup_label = $hero['popup_video_button_text'] ? $hero['popup_video_button_text'] : 'Watch Video';
+				?>
+				<?php if($popup_type == 'video_file' && $hero['popup_video_file']): ?>
+					<button type="button" class="hero-video-btn" data-action="hero-popup-play">
+						<span class="hero-video-btn-icon"><i class="fas fa-play"></i></span>
+						<span class="hero-video-btn-label"><?php echo esc_html($popup_label); ?></span>
+					</button>
+					<div class="hero-video-modal-wrap mfp-hide" id="hero-video-modal-container">
+						<video id="hero-video-modal" src="<?php echo esc_url($hero['popup_video_file']['url']); ?>" controls playsinline></video>
+					</div>
+				<?php elseif($popup_type == 'video_url' && $hero['popup_video_url']): ?>
+					<a href="<?php echo esc_url($hero['popup_video_url']); ?>" class="hero-video-btn" data-action="hero-popup-embed">
+						<span class="hero-video-btn-icon"><i class="fas fa-play"></i></span>
+						<span class="hero-video-btn-label"><?php echo esc_html($popup_label); ?></span>
+					</a>
+				<?php endif; ?>
+
 				<?php $contact_options = get_field('contact', 'option'); ?>
 				<?php if($contact_options && $contact_options['phone']): ?>
 					<a href="tel:<?php echo preg_replace('/[^0-9+]/', '', $contact_options['phone']); ?>" class="hero-phone">
