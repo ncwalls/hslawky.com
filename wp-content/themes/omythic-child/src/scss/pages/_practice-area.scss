@@ -89,6 +89,10 @@ $pa-cream-dark: #e6e0d0;
 			padding-top: 17.3rem; // y=173 in 800px hero
 			padding-bottom: 4rem;
 			max-width: 75rem;
+			
+			@media (max-width: $mobile) {
+				padding-top: 13rem;
+			}
 		}
 
 		.pa-hero-credentials-wrap {
@@ -116,7 +120,7 @@ $pa-cream-dark: #e6e0d0;
 			line-height: 5rem;
 			letter-spacing: -0.042rem;
 			color: $brand-gold;
-			margin: 0 0 3rem;
+			margin: 0 0 0.7em;
 			max-width: 58rem;
 
 			em {
@@ -137,6 +141,10 @@ $pa-cream-dark: #e6e0d0;
 			color: #fff;
 			margin: 0 0 3rem;
 			max-width: 68rem;
+			
+			@media (max-width: $tablet) {
+				font-size: 2rem;
+			}
 
 			p { margin: 0 0 1rem; &:last-child { margin-bottom: 0; } }
 		}
@@ -154,8 +162,8 @@ $pa-cream-dark: #e6e0d0;
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			width: 38.3rem;
-			height: 4.5rem;
+			// width: 38.3rem;
+			// height: 4.5rem;
 			background: $brand-gold;
 			border-radius: 0.9rem;
 			color: #000;
@@ -163,11 +171,17 @@ $pa-cream-dark: #e6e0d0;
 			font-weight: 500;
 			font-size: 1.9rem;
 			letter-spacing: 0.133rem;
+			line-height: 1.1;
+			padding: 1.2rem 2rem;
 			text-transform: uppercase;
 			text-decoration: none;
 			transition: background 0.2s;
 
 			&:hover { background: $brand-gold-dark; color: #000; }
+
+			@media (max-width: $mobile) {
+				font-size: 1.7rem;
+			}
 		}
 
 		.pa-hero-or {
@@ -183,8 +197,8 @@ $pa-cream-dark: #e6e0d0;
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			width: 21.5rem;
-			height: 4.5rem;
+			// width: 21.5rem;
+			// height: 4.5rem;
 			background: transparent;
 			border: 2px solid $brand-gold;
 			border-radius: 0.9rem;
@@ -193,6 +207,8 @@ $pa-cream-dark: #e6e0d0;
 			font-weight: 500;
 			font-size: 1.9rem;
 			letter-spacing: 0.133rem;
+			line-height: 1.1;
+			padding: 1.2rem 2rem;
 			text-transform: uppercase;
 			text-decoration: none;
 			transition: background 0.2s, color 0.2s;
